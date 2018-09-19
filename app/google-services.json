@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1076597376196",
+    "firebase_url": "https://emotion-analyzer-c9a59.firebaseio.com",
+    "project_id": "emotion-analyzer-c9a59",
+    "storage_bucket": "emotion-analyzer-c9a59.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076597376196:android:be0220d1733705d6",
+        "android_client_info": {
+          "package_name": "com.example.smart.emotionanalyzer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076597376196-0ih5vt2nvptnbrv4mh04c8fs3d6fsen4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smart.emotionanalyzer",
+            "certificate_hash": "42474da9dff99242a72060e13a4ab8776aa59659"
+          }
+        },
+        {
+          "client_id": "1076597376196-8amns1e0c0khrnsocm19a81cscmbimsh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs8YMOd8zESozIcIUP1A623wW1YaMxvJk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076597376196-8amns1e0c0khrnsocm19a81cscmbimsh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
