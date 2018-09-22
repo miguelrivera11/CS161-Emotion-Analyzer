@@ -23,7 +23,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String password;
     private String confirmPassword;
     private FirebaseAuth mAuth;
-    private int num;
 
 
     @Override
