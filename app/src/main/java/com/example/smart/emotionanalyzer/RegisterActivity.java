@@ -18,11 +18,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
-    String email;
-    String name;
-    String password;
-    String confirmPassword;
+    private String email;
+    private String name;
+    private String password;
+    private String confirmPassword;
     private FirebaseAuth mAuth;
+    private int num;
 
 
     @Override
@@ -39,16 +40,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 email = emailView.getText().toString();
-                do {
-                    password = passwordView.getText().toString();
-                    confirmPassword = confirmPasswordView.getText().toString();
-                    if (!password.equals(confirmPassword)) {
-                        Toast.makeText(RegisterActivity.this, "Passwords do not match",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                password = passwordView.getText().toString();
+                confirmPassword = confirmPasswordView.getText().toString();
+                if (!password.equals(confirmPassword)) {
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match",
+                            Toast.LENGTH_SHORT).show();
                 }
-                while (!password.equals(confirmPassword));
-                if (isEmailValid(email) && isPasswordValid(password)) {
+                else if (isEmailValid(email) && isPasswordValid(password)) {
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -107,7 +105,16 @@ public class RegisterActivity extends AppCompatActivity {
             return true;
         }
         else {
-            String invalidMessage = getString(R.string.error_invalid_password);
+            String invalidMessage = "";
+            if (password.length() < 8) {
+                invalidMessage = "Password is too short";
+            }
+            else if (!password.matches(".*[A-Z].*")) {
+                invalidMessage = "Password must have a capital letter";
+            }
+            else {
+                invalidMessage = "Password must have a numeral";
+            }
             Toast.makeText(RegisterActivity.this, invalidMessage,
                     Toast.LENGTH_SHORT).show();
             return false;

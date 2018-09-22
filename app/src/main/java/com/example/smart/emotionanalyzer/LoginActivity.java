@@ -44,7 +44,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 userPassword = mPasswordView.getText().toString();
                 userEmail = mEmailView.getText().toString();
-                attemptLogin(userEmail, userPassword);
+                if (userEmail.equals("")) {
+                    Toast.makeText(LoginActivity.this, "Please enter an email",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if (userPassword.equals("")) {
+                    Toast.makeText(LoginActivity.this, "Please enter a password",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    attemptLogin(userEmail, userPassword);
+                }
             }
         });
 
