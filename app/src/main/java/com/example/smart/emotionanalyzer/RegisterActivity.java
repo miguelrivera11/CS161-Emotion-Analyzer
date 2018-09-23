@@ -17,12 +17,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class RegisterActivity extends AppCompatActivity {
     private String email;
     private String name;
     private String password;
     private String confirmPassword;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
 
 
     @Override
@@ -31,9 +36,11 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         final EditText emailView = (EditText) findViewById(R.id.email);
-        EditText nameView = (EditText) findViewById(R.id.name);
+        final EditText nameView = (EditText) findViewById(R.id.name);
         final EditText passwordView = (EditText) findViewById(R.id.password);
         final EditText confirmPasswordView = (EditText) findViewById(R.id.confirm_password);
+        database = FirebaseDatabase.getInstance();
+
         Button registerButton = (Button) findViewById(R.id.register);
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -41,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
                 email = emailView.getText().toString();
                 password = passwordView.getText().toString();
                 confirmPassword = confirmPasswordView.getText().toString();
+                name = nameView.getText().toString();
                 if (!password.equals(confirmPassword)) {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match",
                             Toast.LENGTH_SHORT).show();
@@ -53,6 +61,19 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         FirebaseUser user = mAuth.getCurrentUser();
+                                        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                                        user.updateProfile(profileChangeRequest)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                    }
+                                                });
+                                        DatabaseReference usersReference = database.getReference("Users");
+                                        DatabaseReference userReference = usersReference.child("" + user.getUid());
+                                        userReference.child("name").setValue(name);
+                                        userReference.child("topics created").setValue("");
+                                        userReference.child("topics commented").setValue("");
+
                                         sendToMain();
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -83,6 +104,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void sendToMain() {
         Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+        Bundle userBundle = new Bundle();
+        userBundle.putString("name", name);
+        mainIntent.putExtras(userBundle);
         startActivity(mainIntent);
         finish();
     }

@@ -20,4 +20,5 @@
     <string name="title_Commented">Previously Commented</string>
     <string name="title_Account">Account</string>
     <string name="action_logout">logout</string>
+    <string name="action_add_topic">add topic</string>
 </resources>

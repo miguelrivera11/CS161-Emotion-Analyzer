@@ -22,13 +22,12 @@
         android:orientation="vertical">
 
 
-        <EditText
-            android:id="@+id/editText"
+        <TextView
+            android:id="@+id/hello_message"
             android:layout_width="298dp"
             android:layout_height="82dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="Hello, " />
 
     </LinearLayout>
 </RelativeLayout>

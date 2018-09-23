@@ -16,6 +16,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -24,8 +29,13 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference userRef;
+    private Intent mainIntent;
     private String userEmail;
     private String userPassword;
+    private String userName;
+    boolean done;
 
 
     @Override
@@ -73,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser !=null) {
-            sendToMain();
+            sendToMain(currentUser.getDisplayName());
         }
     }
 
@@ -90,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            sendToMain();
+                            sendToMain(user.getUid());
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -103,8 +113,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void sendToMain() {
-        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+    private void sendToMain(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        mainIntent.putExtras(bundle);
         startActivity(mainIntent);
         finish();
     }
@@ -114,5 +127,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(registerIntent);
         finish();
     }
+
 }
 
