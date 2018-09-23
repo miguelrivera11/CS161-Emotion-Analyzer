@@ -57,7 +57,7 @@ public class LoginTest {
         onView(withId(R.id.email)).perform(click()).perform(replaceText("incorrectemail@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(click()).perform(replaceText("Tester123"), closeSoftKeyboard());
         onView(withId(R.id.email_sign_in_button)).perform(click());
-        onView(withText("Authentication failed.")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("This email address is invalid")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
    @Test
