@@ -11,8 +11,15 @@ public class Topic {
     int angry;
     int neutral;
     ArrayList<Comment> comments;
+    String category;
 
-    public Topic (String topic, String creator, int angry, int happy, int sad, int neutral, String date) {
+    public Topic() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+    }
+
+    public Topic (String topic, String creator, int angry, int happy, int sad, int neutral, String date, String category) {
         this.topic = topic;
         this.creator = creator;
         this.comments = comments;
@@ -20,6 +27,7 @@ public class Topic {
         this.neutral = neutral;
         this.happy = happy;
         this.date = date;
+        this.category = category;
         comments = new ArrayList<>();
     }
 
@@ -37,5 +45,29 @@ public class Topic {
 
     public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public int getHappy() {
+        return happy;
+    }
+
+    public int getAngry() {
+        return angry;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public int getSad() {
+        return sad;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }

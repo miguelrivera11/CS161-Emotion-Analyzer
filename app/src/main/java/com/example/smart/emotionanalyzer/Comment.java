@@ -8,6 +8,12 @@ public class Comment {
     String date;
     ArrayList<Comment> replies;
 
+    public Comment() {
+        if (replies == null) {
+            replies = new ArrayList<>();
+        }
+    }
+
     public Comment(String comment, String creator, String date) {
         this.comment = comment;
         this.creator = creator;

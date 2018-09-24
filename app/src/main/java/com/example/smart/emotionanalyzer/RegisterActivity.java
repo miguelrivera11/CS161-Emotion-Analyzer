@@ -68,11 +68,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                     }
                                                 });
+                                        User newUser = new User(name);
                                         DatabaseReference usersReference = database.getReference("Users");
-                                        DatabaseReference userReference = usersReference.child("" + user.getUid());
-                                        userReference.child("name").setValue(name);
-                                        userReference.child("topics created").setValue("");
-                                        userReference.child("topics commented").setValue("");
+                                        usersReference.child(user.getUid()).setValue(newUser);
+
 
                                         sendToMain();
                                     } else {

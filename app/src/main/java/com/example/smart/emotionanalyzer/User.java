@@ -7,6 +7,15 @@ public class User {
     ArrayList<String> createdTopics;
     ArrayList<String> commentedTopics;
 
+    public User() {
+        if (createdTopics == null) {
+            createdTopics = new ArrayList<>();
+        }
+        if (commentedTopics == null) {
+            commentedTopics = new ArrayList<>();
+        }
+    }
+
     public User (String name) {
         this.name = name;
         createdTopics = new ArrayList<>();
@@ -23,5 +32,13 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public void addCreatedTopic(String topic) {
+        createdTopics.add(topic);
+    }
+
+    public void addCommentedTopic(String topic) {
+        commentedTopics.add(topic);
     }
 }
