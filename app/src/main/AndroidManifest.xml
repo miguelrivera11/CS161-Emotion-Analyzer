@@ -26,7 +26,9 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".CreateTopic"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

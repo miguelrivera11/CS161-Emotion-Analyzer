@@ -40,6 +40,7 @@ public class AccountFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         final TextView helloMessage = view.findViewById(R.id.hello_message);
+        //TODO: Fix null object reference when going back from create a topic
         String userName = getActivity().getIntent().getExtras().getString("name");
         helloMessage.setText("Hello, " + userName);
 
