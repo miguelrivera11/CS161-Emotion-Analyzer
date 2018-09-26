@@ -50,7 +50,7 @@ public class BrowseFragment extends Fragment {
         entertainment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("TV and movies");
+                sendToTopicCategory("TV/Movies");
             }
         });
 

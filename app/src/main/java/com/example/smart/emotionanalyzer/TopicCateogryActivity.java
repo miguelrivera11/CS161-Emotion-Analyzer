@@ -42,7 +42,7 @@ public class TopicCateogryActivity extends AppCompatActivity {
         else if (category.equals("education")) {
             title.setBackgroundColor(getResources().getColor(R.color.color_education, null));
         }
-        else if (category.equals("TV and movies")) {
+        else if (category.equals("TV/Movies")) {
             title.setBackgroundColor(getResources().getColor(R.color.color_entertainment, null));
         }
         else if (category.equals("society and ethics")) {

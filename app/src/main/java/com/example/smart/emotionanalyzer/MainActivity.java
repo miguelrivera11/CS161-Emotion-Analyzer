@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Bundle bundle = new Bundle();
                 bundle.putString("name", mAuth.getCurrentUser().getDisplayName());
                 Toast.makeText(getApplicationContext(), "Item selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, CreateTopic.class);
+                Intent intent = new Intent(MainActivity.this, CreateTopicActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
