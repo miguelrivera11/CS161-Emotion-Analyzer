@@ -5,11 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:layout_marginHorizontal="25dp"
+        app:columnCount="2">
+
+
+        <Button
+            android:id="@+id/button_constuction_category"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/color_construction"
+            android:text="Construction" />
+
+        <Button
+            android:id="@+id/button_TVMovies"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/color_entertainment"
+            android:text="TV/Movies" />
+
+        <Button
+            android:id="@+id/button_politics"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/color_politics"
+            android:text="Politics" />
+
+        <Button
+            android:id="@+id/button_business"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/color_business"
+            android:text="Business" />
+
+        <Button
+            android:id="@+id/button_ethics"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/color_ethics"
+            android:text="Society and Ethics" />
+
+        <Button
+            android:id="@+id/button_education"
+            android:layout_width="170dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/color_education"
+            android:text="Education" />
+
+
+
+    </android.support.v7.widget.GridLayout>
+
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal = "true"
-        android:layout_centerVertical = "true"
-        android:text="TODO: create browse" />
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="50dp"
+        android:text="Select a Category" />
 </RelativeLayout>

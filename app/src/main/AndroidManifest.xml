@@ -27,8 +27,13 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".CreateTopic"
+        <activity android:name=".CreateTopicActivity"
             android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".TopicCateogryActivity"
+            android:label="@string/title_activity_topic_cateogry"
+            android:theme="@style/AppTheme.NoActionBar" />
+>>>>>>> task/browse-categories
     </application>
 
 </manifest>

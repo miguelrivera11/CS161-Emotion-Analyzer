@@ -74,7 +74,4 @@ public class MainFeedFragment extends Fragment {
 
         return view;
     }
-
-
-
 }

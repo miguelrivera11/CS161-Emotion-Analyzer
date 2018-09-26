@@ -21,4 +21,7 @@
     <string name="title_Account">Account</string>
     <string name="action_logout">logout</string>
     <string name="action_add_topic">add topic</string>
+    <string name="title_activity_topic_cateogry">TopicCateogryActivity</string>
+    <string name="title_activity_random">RandomActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

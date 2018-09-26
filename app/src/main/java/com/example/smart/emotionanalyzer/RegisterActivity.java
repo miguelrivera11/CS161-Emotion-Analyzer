@@ -102,9 +102,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void sendToMain() {
         Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-        Bundle userBundle = new Bundle();
-        userBundle.putString("name", name);
-        mainIntent.putExtras(userBundle);
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("fragment", "MainFeedFragment");
+        mainIntent.putExtras(bundle);
         startActivity(mainIntent);
         finish();
     }
