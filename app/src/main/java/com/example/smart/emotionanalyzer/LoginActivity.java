@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
     private void sendToMain(String name) {
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
+        bundle.putString("fragment", "MainFeedFragment");
         mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         mainIntent.putExtras(bundle);
         startActivity(mainIntent);

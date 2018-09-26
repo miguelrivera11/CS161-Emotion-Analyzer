@@ -23,16 +23,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String fragment = getIntent().getExtras().getString("fragment");
         mAuth = FirebaseAuth.getInstance();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-        navigation.setSelectedItemId(R.id.navigation_Home);
-        loadFragment(new MainFeedFragment());
+        if(fragment.equals("browse")) {
+            navigation.setSelectedItemId(R.id.navigation_Browse);
+            loadMyFragment(new BrowseFragment());
+        }
+        else if (fragment.equals("account")) {
+            navigation.setSelectedItemId(R.id.navigation_Account);
+            loadMyFragment(new AccountFragment());
+        }
+        else if (fragment.equals("commented")) {
+            navigation.setSelectedItemId(R.id.navigation_Commented);
+            loadMyFragment(new CommentedFragment());
+        }
+        else {
+            navigation.setSelectedItemId(R.id.navigation_Home);
+            loadMyFragment(new MainFeedFragment());
+        }
 
     }
 
-    private boolean loadFragment(Fragment fragment) {
+    private boolean loadMyFragment(Fragment fragment) {
         if (fragment == null) {
             return false;
         }
@@ -59,6 +74,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         else if(id == R.id.navigation_Account) {
             fragment = new AccountFragment();
         }
-        return loadFragment(fragment);
+        return loadMyFragment(fragment);
     }
 }

@@ -26,7 +26,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity
+            android:name=".TopicCateogryActivity"
+            android:label="@string/title_activity_topic_cateogry"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
