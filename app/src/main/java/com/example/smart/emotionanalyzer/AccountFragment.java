@@ -29,8 +29,6 @@ import java.util.List;
 public class AccountFragment extends Fragment {
     private FirebaseAuth mAuth;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

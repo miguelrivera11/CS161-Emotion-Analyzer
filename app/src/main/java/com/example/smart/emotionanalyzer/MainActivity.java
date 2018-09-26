@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -73,9 +74,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         int id = item.getItemId();
         switch (id){
             case R.id.item1:
+                Bundle bundle = new Bundle();
+                bundle.putString("name", mAuth.getCurrentUser().getDisplayName());
                 Toast.makeText(getApplicationContext(), "Item selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, CreateTopic.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
+
                 return true;
 
             default:
