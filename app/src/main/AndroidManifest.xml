@@ -27,13 +27,18 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".CreateTopicActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".CreateTopicActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".TopicCateogryActivity"
             android:label="@string/title_activity_topic_cateogry"
             android:theme="@style/AppTheme.NoActionBar" />
->>>>>>> task/browse-categories
+        >>>>>>> task/browse-categories
+        <activity
+            android:name=".EditAccountActivity"
+            android:label="@string/title_activity_edit_account"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

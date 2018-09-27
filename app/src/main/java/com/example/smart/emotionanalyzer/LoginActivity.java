@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,12 +31,12 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
-    private DatabaseReference userRef;
+    private FirebaseUser user;
     private Intent mainIntent;
     private String userEmail;
     private String userPassword;
     private String userName;
+    private boolean reauthenticating;
     boolean done;
 
 
@@ -43,6 +45,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_login);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            reauthenticating = false;
+        }
+        else {
+            reauthenticating = true;
+        }
         // Set up the login form.
         final EditText mEmailView = (EditText) findViewById(R.id.email);
 
@@ -62,13 +71,19 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Please enter a password",
                             Toast.LENGTH_SHORT).show();
                 }
-                else {
+                else if(reauthenticating) {
+                    reauthenticate(userEmail, userPassword);
+                }
+                else{
                     attemptLogin(userEmail, userPassword);
                 }
             }
         });
 
         Button registerButton = (Button) findViewById(R.id.register);
+        if (reauthenticating) {
+            registerButton.setVisibility(View.INVISIBLE);
+        }
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser !=null) {
-            sendToMain(currentUser.getDisplayName());
+        user = mAuth.getCurrentUser();
+        if (user !=null && !reauthenticating) {
+            sendToMain(user.getDisplayName());
         }
     }
 
@@ -112,6 +127,22 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void reauthenticate(String email, String userPassword) {
+        AuthCredential credential = EmailAuthProvider.getCredential(email, userPassword);
+        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    sendToEditAccount();
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 
     private void sendToMain(String name) {
         Bundle bundle = new Bundle();
@@ -126,6 +157,13 @@ public class LoginActivity extends AppCompatActivity {
     private void sendToRegister() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
+        finish();
+    }
+
+    private void sendToEditAccount() {
+        mainIntent = new Intent(LoginActivity.this, EditAccountActivity.class);
+        mainIntent.putExtras(getIntent().getExtras());
+        startActivity(mainIntent);
         finish();
     }
 
