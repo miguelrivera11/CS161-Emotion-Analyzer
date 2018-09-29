@@ -39,7 +39,10 @@
             android:name=".EditAccountActivity"
             android:label="@string/title_activity_edit_account"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TopicDetail"></activity>
+        <activity
+            android:name=".TopicDetail"
+            android:parentActivityName=".MainActivity"/>
+
     </application>
 
 </manifest>

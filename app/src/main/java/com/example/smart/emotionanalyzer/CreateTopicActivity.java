@@ -34,6 +34,7 @@ public class CreateTopicActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class CreateTopicActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database = FirebaseDatabase.getInstance();
 
+        if (getIntent().getExtras() != null) {
+           user = getIntent().getStringExtra("user");
+        }
         List<String> categories = new ArrayList<String>();
         categories.add("Education");
         categories.add("Entertainment/TV");
@@ -85,11 +89,10 @@ public class CreateTopicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO: get actual user and analyze number of comments for each emotion
-                //TODO: write to database under topic id and return to main screen and wire up delete post
                 DatabaseReference ref = database.getReference().child("Topics");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
-                Topic topic = new Topic(postEditText.getText().toString(), "test", 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
+                Topic topic = new Topic(postEditText.getText().toString(), user, 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 String id = ref.push().getKey();
                 ref.child(id).setValue(topic);

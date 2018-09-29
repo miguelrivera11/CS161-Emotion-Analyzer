@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ public class MainFeedFragment extends Fragment {
     private DatabaseReference topicsRef;
     private ArrayList<Topic> topics;
     private ListView topicListView;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onStart() {
@@ -63,6 +65,7 @@ public class MainFeedFragment extends Fragment {
         final Random r = new Random();
         topicListView = view.findViewById(R.id.list_of_topics);
         topics = new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance();
 
         topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,6 +83,7 @@ public class MainFeedFragment extends Fragment {
             public void onClick(View v) {
                 //CHANGE SO IT GOES TO CREATE TOPIC ACTIVITY
                 Intent intent = new Intent(getActivity(), CreateTopicActivity.class);
+                intent.putExtra("user", mAuth.getCurrentUser().getDisplayName());
                 startActivity(intent);
             }
         });
