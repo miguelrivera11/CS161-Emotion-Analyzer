@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,10 +41,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_topic);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database = FirebaseDatabase.getInstance();
-        if (getIntent() != null) {
-            Bundle bundle = getIntent().getExtras();
-            String valueReceived = bundle.getString("name");
-        }
+
         List<String> categories = new ArrayList<String>();
         categories.add("Education");
         categories.add("Entertainment/TV");
@@ -67,9 +65,10 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().trim().length() ==0) {
+                if (charSequence.toString().trim().length() == 0) {
                     post.setEnabled(false);
                 } else {
                     post.setEnabled(true);
@@ -124,9 +123,24 @@ public class CreateTopicActivity extends AppCompatActivity {
     }
 
     public void sendToMain() {
+        Bundle bundle = new Bundle();
+        bundle.putString("fragment", "MainFeedFragment");
         Intent intent = new Intent(CreateTopicActivity.this, MainActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d("back", "selected");
+                sendToMain();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 }

@@ -1,15 +1,19 @@
 package com.example.smart.emotionanalyzer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,18 +64,27 @@ public class MainFeedFragment extends Fragment {
         topicListView = view.findViewById(R.id.list_of_topics);
         topics = new ArrayList<>();
 
+        topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Topic t = (Topic) topicListView.getItemAtPosition(i);
+                String category = t.getCategory();
+                String topic = t.getCategory();
+                String creator = t.getCreator();
+                String date = t.getDate();
+            }
+        });
         Button addTopic = view.findViewById(R.id.add_topic);
         addTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //CHANGE SO IT GOES TO CREATE TOPIC ACTIVITY
-                Topic test = new Topic("" + r.nextInt(), "miguel rivera", 5, 90, 0, 5, "9-20-18", "news");
-                String id = topicsRef.push().getKey();
-                topicsRef.child(id).setValue(test);
+                Intent intent = new Intent(getActivity(), CreateTopicActivity.class);
+                startActivity(intent);
             }
         });
 
-
         return view;
     }
+
 }
