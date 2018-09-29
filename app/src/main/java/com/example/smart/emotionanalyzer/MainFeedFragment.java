@@ -67,11 +67,11 @@ public class MainFeedFragment extends Fragment {
         topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Topic t = (Topic) topicListView.getItemAtPosition(i);
-                String category = t.getCategory();
-                String topic = t.getCategory();
-                String creator = t.getCreator();
-                String date = t.getDate();
+                Topic t = (Topic) topics.get(i);
+
+                Intent intent = new Intent(getActivity(), TopicDetail.class);
+                intent.putExtra("topic", t);
+                startActivity(intent);
             }
         });
         Button addTopic = view.findViewById(R.id.add_topic);

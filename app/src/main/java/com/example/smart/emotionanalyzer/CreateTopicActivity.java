@@ -87,7 +87,7 @@ public class CreateTopicActivity extends AppCompatActivity {
                 //TODO: get actual user and analyze number of comments for each emotion
                 //TODO: write to database under topic id and return to main screen and wire up delete post
                 DatabaseReference ref = database.getReference().child("Topics");
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
                 Topic topic = new Topic(postEditText.getText().toString(), "test", 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
