@@ -2,6 +2,7 @@ package com.example.smart.emotionanalyzer;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 public class TopicDetail extends AppCompatActivity {
@@ -19,6 +20,7 @@ public class TopicDetail extends AppCompatActivity {
         TextView date = (TextView) findViewById(R.id.textViewDate);
         TextView author = (TextView) findViewById(R.id.textViewAuthor);
 
+        topic.setMovementMethod(new ScrollingMovementMethod());
         topic.setText( a.getTopic());
         category.setText("Category: " +a.getCategory());
         date.setText("Created on: " + a.getDate());

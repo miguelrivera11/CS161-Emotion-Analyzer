@@ -49,14 +49,15 @@
 
             <TextView
                 android:id="@+id/textViewTopic"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="158dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_below="@+id/textViewCategory"
                 android:layout_marginTop="23dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:scrollbars="vertical"
                 android:text="TextView"
                 android:textSize="20sp" />
 
