@@ -92,9 +92,9 @@ public class CreateTopicActivity extends AppCompatActivity {
                 //TODO: get actual user and analyze number of comments for each emotion
                 //TODO: write to database under topic id and return to main screen and wire up delete post
                 DatabaseReference ref = database.getReference().child("Topics");
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
-                Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
+                Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 String id = ref.push().getKey();
                 ref.child(id).setValue(topic);
@@ -131,13 +131,13 @@ public class CreateTopicActivity extends AppCompatActivity {
                         .setPositiveButton("Continue editing", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d("MainActivity", "Sending atomic bombs to Jupiter");
+                                Log.d("CreateTopic", "Positive");
                             }
                         })
                         .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d("MainActivity", "Aborting mission...");
+                                Log.d("CreateTopic", "Negative");
                                 postEditText.setText("");
                                 spinner.setSelection(0);
                             }
