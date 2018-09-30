@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,10 +32,10 @@ import java.util.List;
 
 public class CreateTopicActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
-    private String user;
+    private boolean added = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,10 @@ public class CreateTopicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_topic);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database = FirebaseDatabase.getInstance();
-
-        if (getIntent().getExtras() != null) {
-           user = getIntent().getStringExtra("user");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            String valueReceived = bundle.getString("name");
         }
         List<String> categories = new ArrayList<String>();
         categories.add("Education");
@@ -69,10 +71,9 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().trim().length() == 0) {
+                if (charSequence.toString().trim().length() ==0) {
                     post.setEnabled(false);
                 } else {
                     post.setEnabled(true);
@@ -89,14 +90,35 @@ public class CreateTopicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO: get actual user and analyze number of comments for each emotion
+                //TODO: write to database under topic id and return to main screen and wire up delete post
                 DatabaseReference ref = database.getReference().child("Topics");
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 Date date = new Date();
-                Topic topic = new Topic(postEditText.getText().toString(), user, 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
+                Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), 0, 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 String id = ref.push().getKey();
                 ref.child(id).setValue(topic);
-                sendToMain();
+                userRef = database.getReference("Users/" + user.getUid());
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Method gets called twice since we are reading and writing to the database. Using the added boolean it only gets called once
+                        if (!added) {
+                            User userObject = dataSnapshot.getValue(User.class);
+                            userObject.addCreatedTopic(postEditText.getText().toString());
+                            userRef.setValue(userObject);
+                            added = true;
+                            sendToMain();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
         });
 
@@ -126,14 +148,13 @@ public class CreateTopicActivity extends AppCompatActivity {
     }
 
     public void sendToMain() {
-        Bundle bundle = new Bundle();
-        bundle.putString("fragment", "MainFeedFragment");
+        Bundle bundle = getIntent().getExtras();
+        bundle.putString("fragment", "main");
         Intent intent = new Intent(CreateTopicActivity.this, MainActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
