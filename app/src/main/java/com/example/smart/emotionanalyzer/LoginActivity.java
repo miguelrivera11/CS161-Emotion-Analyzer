@@ -132,13 +132,13 @@ public class LoginActivity extends AppCompatActivity {
         user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
+                //if (task.isSuccessful()) {
                     sendToEditAccount();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                }
+                //}
+                //else {
+                    //Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            //Toast.LENGTH_SHORT).show();
+                //}
             }
         });
     }
