@@ -164,7 +164,7 @@ public class EditAccountActivity extends AppCompatActivity {
         };
 
         Handler h = new Handler();
-        h.postDelayed(r, 1000); // will be delayed for 1 second to give time for databse to update
+        h.postDelayed(r, 2000); // will be delayed for 1 second to give time for databse to update
     }
 
 }

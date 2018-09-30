@@ -1,6 +1,7 @@
 package com.example.smart.emotionanalyzer;
 
 import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,22 +31,35 @@ public class MainFeedFragment extends Fragment {
     private DatabaseReference topicsRef;
     private ArrayList<Topic> topics;
     private ListView topicListView;
+    boolean starting;
     private FirebaseAuth mAuth;
 
     @Override
     public void onStart() {
         super.onStart();
+        starting = true;
         topicsRef.addValueEventListener(new ValueEventListener() {
+            /*Look at the code below apparently this is always listening if the main activity is finished
+            I noticed in addTopic we were getting a null exception and I linked it back to the context c being null
+            here. Since the data changes, as soon as you tap add topic, this method gets called, but since you're
+            on CreateTopic, this fragment doesn't exist and the activity doesnt exist. I fixed it by adding the
+            starting boolean. Im not sure if there is a way to get this to stop listening. I tried
+            AddListenerforSingleValueEvent but it sill had the same issue
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                topics.clear();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Topic topic = child.getValue(Topic.class);
-                    topics.add(topic);
-                }
+                if (starting) {
+                    topics.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Topic topic = child.getValue(Topic.class);
+                        topics.add(topic);
+                    }
+                    Context c = getActivity();
 
-                TopicList adapter = new TopicList(getActivity(), topics);
-                topicListView.setAdapter(adapter);
+                    TopicList adapter = new TopicList(getActivity(), topics);
+                    topicListView.setAdapter(adapter);
+                    starting = false;
+                }
             }
 
             @Override

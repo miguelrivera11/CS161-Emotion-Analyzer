@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Bundle bundle = getIntent().getExtras();
         String fragment = getIntent().getExtras().getString("fragment");
         mAuth = FirebaseAuth.getInstance();
-
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -75,6 +75,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             fragment = new AccountFragment();
         }
         return loadMyFragment(fragment);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.item1:
+                Bundle bundle = getIntent().getExtras();
+                Toast.makeText(getApplicationContext(), "Item selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, CreateTopicActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
