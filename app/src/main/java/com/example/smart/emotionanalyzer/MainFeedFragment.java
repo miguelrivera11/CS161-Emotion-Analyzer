@@ -1,17 +1,22 @@
 package com.example.smart.emotionanalyzer;
 
+import android.content.Intent;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +32,7 @@ public class MainFeedFragment extends Fragment {
     private ArrayList<Topic> topics;
     private ListView topicListView;
     boolean starting;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onStart() {
@@ -73,19 +79,30 @@ public class MainFeedFragment extends Fragment {
         final Random r = new Random();
         topicListView = view.findViewById(R.id.list_of_topics);
         topics = new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance();
 
+        topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Topic t = (Topic) topics.get(i);
+
+                Intent intent = new Intent(getActivity(), TopicDetail.class);
+                intent.putExtra("topic", t);
+                startActivity(intent);
+            }
+        });
         Button addTopic = view.findViewById(R.id.add_topic);
         addTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //CHANGE SO IT GOES TO CREATE TOPIC ACTIVITY
-                Topic test = new Topic("" + r.nextInt(), "miguel rivera", 5, 90, 0, 5, "9-20-18", "news");
-                String id = topicsRef.push().getKey();
-                topicsRef.child(id).setValue(test);
+                Intent intent = new Intent(getActivity(), CreateTopicActivity.class);
+                intent.putExtra("user", mAuth.getCurrentUser().getDisplayName());
+                startActivity(intent);
             }
         });
 
-
         return view;
     }
+
 }

@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return true;
     }
 
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
@@ -78,30 +76,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         return loadMyFragment(fragment);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case R.id.item1:
-                Bundle bundle = getIntent().getExtras();
-                Toast.makeText(getApplicationContext(), "Item selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, CreateTopicActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 }

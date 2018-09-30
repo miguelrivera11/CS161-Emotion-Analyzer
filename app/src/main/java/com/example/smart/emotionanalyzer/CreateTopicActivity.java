@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -154,5 +155,16 @@ public class CreateTopicActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d("back", "selected");
+                sendToMain();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
+    }
 }
