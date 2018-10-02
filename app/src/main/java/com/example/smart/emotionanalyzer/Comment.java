@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Comment {
     String comment;
     String creator;
+    String creatorID;
     String date;
     ArrayList<Comment> replies;
 
@@ -14,15 +15,20 @@ public class Comment {
         }
     }
 
-    public Comment(String comment, String creator, String date) {
+    public Comment(String comment, String creator, String creatorID, String date) {
         this.comment = comment;
         this.creator = creator;
+        this.creatorID = creatorID;
         this.date = date;
         replies = new ArrayList<>();
     }
 
     public String getCreator() {
         return creator;
+    }
+
+    public String getCreatorID() {
+        return creatorID;
     }
 
     public ArrayList<Comment> getReplies() {
@@ -35,6 +41,10 @@ public class Comment {
 
     public String getDate() {
         return date;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public void addReply(Comment reply) {

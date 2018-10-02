@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Topic implements Parcelable {
     String topic;
     String creator;
+    String creatorID;
     String date;
     int happy;
     int sad;
@@ -24,6 +25,7 @@ public class Topic implements Parcelable {
     public Topic(Parcel in) {
         this.topic = in.readString();
         this.creator = in.readString();
+        this.creatorID = in.readString();
         this.angry = in.readInt();
         this.happy = in.readInt();
         this.sad = in.readInt();
@@ -41,6 +43,7 @@ public class Topic implements Parcelable {
      *
      * @param topic
      * @param creator
+     * @param creatorID
      * @param angry
      * @param happy
      * @param sad
@@ -48,9 +51,10 @@ public class Topic implements Parcelable {
      * @param date
      * @param category
      */
-    public Topic (String topic, String creator, int angry, int happy, int sad, int neutral, String date, String category) {
+    public Topic (String topic, String creator,String creatorID, int angry, int happy, int sad, int neutral, String date, String category) {
         this.topic = topic;
         this.creator = creator;
+        this.creatorID = creatorID;
         this.angry = angry;
         this.happy = happy;
         this.sad = sad;
@@ -100,6 +104,15 @@ public class Topic implements Parcelable {
     public String getCategory() {
         return category;
     }
+
+    public String getCreatorID() {
+        return creatorID;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
 
     @Override
     public int describeContents() {
