@@ -90,6 +90,7 @@ public class MainFeedFragment extends Fragment {
                 Topic t = (Topic) topics.get(i);
 
                 Intent intent = new Intent(getActivity(), TopicDetail.class);
+                intent.putExtra("fragment_detail", "Analysis");
                 intent.putExtra("topic", t);
                 startActivity(intent);
             }

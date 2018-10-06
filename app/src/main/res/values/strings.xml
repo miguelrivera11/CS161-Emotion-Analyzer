@@ -28,4 +28,9 @@
     <string name="title_activity_edit_account">EditAccountActivity</string>
     <string name="action_cancel">cancel</string>
     <string name="action_confim">confirm</string>
+    <string name="title_Analysis">Analysis</string>
+    <string name="title_Comment">Comment/Reply</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
