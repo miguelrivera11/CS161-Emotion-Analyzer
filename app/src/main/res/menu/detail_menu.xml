@@ -10,7 +10,4 @@
         android:icon="@drawable/ic_comment_black_24dp"
         android:title="@string/title_Comment" />
 
-
-
-
 </menu>

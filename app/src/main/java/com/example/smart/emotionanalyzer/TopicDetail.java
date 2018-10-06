@@ -35,7 +35,6 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Bundle bundle = getIntent().getExtras();
         String fragment = getIntent().getExtras().getString("fragment_detail");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.detail_navigation);
         a = getIntent().getExtras().getParcelable("topic");
@@ -101,7 +100,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
             fragment = new AnalysisFragment();
         }
         else if (id == R.id.navigation_Comment){
-            fragment = new CommentedFragment();
+            fragment = new CommentFragment();
         }
         return loadMyFragment(fragment);
     }

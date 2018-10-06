@@ -41,6 +41,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TopicDetail"
+            android:windowSoftInputMode="adjustNothing"
             android:parentActivityName=".MainActivity"/>
 
     </application>
