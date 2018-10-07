@@ -88,17 +88,19 @@ public class CommentFragment extends Fragment {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
+        int counter = 0;
 
-        for (int i = 0; i < comments.size(); i++) {
+        for (int i = comments.size() - 1; i >=0; i--) {
             String message = comments.get(i).getComment();
             List<String> reply = new ArrayList<>();
-            for (int j = 0; j < comments.get(i).getReplies().size(); j++) {
+            for (int j = comments.get(i).getReplies().size() - 1; j >= 0 ; j--) {
                 String replyMessage = comments.get(i).getReplies().get(j).getComment();
                 reply.add(replyMessage);
             }
 
             listDataHeader.add(message);
-            listDataChild.put(listDataHeader.get(i), reply);
+            listDataChild.put(listDataHeader.get(counter), reply);
+            counter++;
         }
 
         // Adding parent data(
