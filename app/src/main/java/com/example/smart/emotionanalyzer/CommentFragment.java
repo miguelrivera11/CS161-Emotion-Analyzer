@@ -92,8 +92,8 @@ public class CommentFragment extends Fragment {
         for (int i = 0; i < comments.size(); i++) {
             String message = comments.get(i).getComment();
             List<String> reply = new ArrayList<>();
-            for (int j = 0; j < comments.get(j).getReplies().size(); j++) {
-                String replyMessage = comments.get(j).getReplies().get(j).getComment();
+            for (int j = 0; j < comments.get(i).getReplies().size(); j++) {
+                String replyMessage = comments.get(i).getReplies().get(j).getComment();
                 reply.add(replyMessage);
             }
 
