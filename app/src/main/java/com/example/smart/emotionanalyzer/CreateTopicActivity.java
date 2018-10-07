@@ -62,6 +62,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         final EditText postEditText = (EditText) findViewById(R.id.editTextPost);
         final Button delete = (Button) findViewById(R.id.DeleteButton);
         post.setEnabled(false);
+        delete.setEnabled(false);
 
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, categories);
         spinner.setAdapter(categoriesAdapter);
@@ -75,8 +76,10 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().length() ==0) {
                     post.setEnabled(false);
+                    delete.setEnabled(false);
                 } else {
                     post.setEnabled(true);
+                    delete.setEnabled(true);
                 }
             }
 
@@ -89,15 +92,14 @@ public class CreateTopicActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: get actual user and analyze number of comments for each emotion
-                //TODO: write to database under topic id and return to main screen and wire up delete post
-                DatabaseReference ref = database.getReference().child("Topics");
+                DatabaseReference topicref = database.getReference().child("Topics");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
                 Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), user.getUid(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
-                String id = ref.push().getKey();
-                ref.child(id).setValue(topic);
+                String id = topicref.push().getKey();
+                topic.setId(id);
+                topicref.child(id).setValue(topic);
                 userRef = database.getReference("Users/" + user.getUid());
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override

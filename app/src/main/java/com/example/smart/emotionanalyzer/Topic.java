@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Topic implements Parcelable {
+    private String id;
     String topic;
     String creator;
     String creatorID;
@@ -113,7 +114,12 @@ public class Topic implements Parcelable {
         this.creator = creator;
     }
 
-
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getId() {
+        return this.id;
+    }
     @Override
     public int describeContents() {
         return 0;

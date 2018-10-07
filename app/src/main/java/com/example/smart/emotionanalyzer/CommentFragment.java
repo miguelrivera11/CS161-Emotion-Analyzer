@@ -35,6 +35,9 @@ import java.util.List;
 
 public class CommentFragment extends Fragment {
 
+    private DatabaseReference topicsRef;
+    private FirebaseDatabase database;
+    private ArrayList<Comment> comments;
     ExpandableListAdapter listAdapter;
     ExpandableListView expandableListView;
     List<String> listDataHeader;
@@ -44,23 +47,62 @@ public class CommentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        database = FirebaseDatabase.getInstance();
+        comments = new ArrayList<>();
         View view =  inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
-        prepareListData();
+        TopicDetail activity = (TopicDetail) getActivity();
+        final Topic a = activity.getTopic();
         EditText comment = (EditText) view.findViewById(R.id.editTextComment);
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
-        expandableListView.setAdapter(listAdapter);
+        topicsRef = database.getReference("Topics");
+
+        topicsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
+                    Topic compare = topicSnapShot.getValue(Topic.class);
+                    if (compare.getId() != null && a.getId() !=null && a.getId().equals(compare.getId())) {
+                        for (DataSnapshot commentsSnapshot : topicSnapShot.child("comments").getChildren()) {
+                            Comment comment = commentsSnapshot.getValue(Comment.class);
+                            comments.add(comment);
+                        }
+                    }
+                }
+                prepareListData();
+                listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         return view;
+
     }
 
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
-        // Adding child data
-        listDataHeader.add("Top 250asdfaslkdfj;asdkjf;alsdkjf;laskdjf;laskjdf;lakjdf;laskjdf;laskjdf;lakjdf;lajsdkfl;jas;dlfjkas;ldfjka;lsdjkf;alsdf");
+
+        for (int i = 0; i < comments.size(); i++) {
+            String message = comments.get(i).getComment();
+            List<String> reply = new ArrayList<>();
+            for (int j = 0; j < comments.get(j).getReplies().size(); j++) {
+                String replyMessage = comments.get(j).getReplies().get(j).getComment();
+                reply.add(replyMessage);
+            }
+
+            listDataHeader.add(message);
+            listDataChild.put(listDataHeader.get(i), reply);
+        }
+
+        // Adding parent data(
+        /*listDataHeader.add("Top 250asdfaslkdfj;asdkjf;alsdkjf;laskdjf;laskjdf;lakjdf;laskjdf;laskjdf;lakjdf;lajsdkfl;jas;dlfjkas;ldfjka;lsdjkf;alsdf");
         listDataHeader.add("Now Showing");
         listDataHeader.add("Coming Soon..");
 
@@ -91,7 +133,7 @@ public class CommentFragment extends Fragment {
 
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        listDataChild.put(listDataHeader.get(2), comingSoon);*/
     }
 
 }
