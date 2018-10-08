@@ -1,23 +1,14 @@
 package com.example.smart.emotionanalyzer;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import android.app.ProgressDialog;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -55,6 +45,7 @@ public class CommentFragment extends Fragment {
         // Inflate the layout for this fragment
 
         mAuth = FirebaseAuth.getInstance();
+
         final FirebaseUser user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         topicsRef = database.getReference("Topics");
@@ -63,6 +54,16 @@ public class CommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+
+                int actualI = comments.size() - i - 1;
+
+                Toast.makeText(getContext(), comments.get(actualI).getComment(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
         TopicDetail activity = (TopicDetail) getActivity();
         final Topic a = activity.getTopic();
         final EditText commentEditText = (EditText) view.findViewById(R.id.editTextComment);
@@ -168,8 +169,5 @@ public class CommentFragment extends Fragment {
             listDataChild.put(listDataHeader.get(counter), reply);
             counter++;
         }
-
     }
-
-
 }
