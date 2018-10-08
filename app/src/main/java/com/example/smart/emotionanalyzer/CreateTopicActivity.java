@@ -62,6 +62,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         final EditText postEditText = (EditText) findViewById(R.id.editTextPost);
         final Button delete = (Button) findViewById(R.id.DeleteButton);
         post.setEnabled(false);
+        delete.setEnabled(false);
 
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, categories);
         spinner.setAdapter(categoriesAdapter);
@@ -75,8 +76,10 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().length() ==0) {
                     post.setEnabled(false);
+                    delete.setEnabled(false);
                 } else {
                     post.setEnabled(true);
+                    delete.setEnabled(true);
                 }
             }
 

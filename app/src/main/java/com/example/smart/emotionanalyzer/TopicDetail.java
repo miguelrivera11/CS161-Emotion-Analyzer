@@ -2,6 +2,9 @@ package com.example.smart.emotionanalyzer;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -23,17 +26,28 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-public class TopicDetail extends AppCompatActivity {
+public class TopicDetail extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private Topic a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        String fragment = getIntent().getExtras().getString("fragment_detail");
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.detail_navigation);
+        a = getIntent().getExtras().getParcelable("topic");
+        navigation.setOnNavigationItemSelectedListener(this);
+        if(fragment.equals("Comment")) {
+            navigation.setSelectedItemId(R.id.navigation_Comment);
+            loadMyFragment(new CommentFragment());
+        }
+        else if (fragment.equals("Analysis")) {
+            navigation.setSelectedItemId(R.id.navigation_Analysis);
+            loadMyFragment(new AnalysisFragment());
+        }
 
-        Topic a = getIntent().getExtras().getParcelable("topic");
-
-        PieChart pieChart = (PieChart) findViewById(R.id.emotionChart);
         TextView topic = (TextView) findViewById(R.id.textViewTopic);
         TextView category = (TextView) findViewById(R.id.textViewCategory);
         TextView date = (TextView) findViewById(R.id.textViewDate);
@@ -45,31 +59,6 @@ public class TopicDetail extends AppCompatActivity {
         date.setText("Created on: " + a.getDate());
         author.setText("By: " + a.getCreator());
 
-        float total = a.getAngry() + a.getHappy() + a.getSad() + a.getNeutral();
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry((float) a.getAngry() / total, "Angry"));
-        entries.add(new PieEntry((float)a.getHappy() / total, "Happy"));
-        entries.add(new PieEntry((float)a.getSad() / total, "Sad"));
-        entries.add(new PieEntry((float)a.getNeutral() / total, "Neutral"));
-
-        PieDataSet dataSet = new PieDataSet(entries,"" );
-
-        ArrayList<String> labels = new ArrayList<>();
-        labels.add("Angry");
-        labels.add("Happy");
-        labels.add("Sad");
-        labels.add("Neutral");
-
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        PieData data = new PieData(dataSet);
-        data.setValueTextSize(12f);
-        dataSet.setValueTextColor(Color.WHITE);
-        pieChart.setDrawHoleEnabled(true);
-        //pieChart.setHoleRadius(5f);
-        //pieChart.setUsePercentValues(true);
-        pieChart.setDrawEntryLabels(false);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setData(data);
 
 
     }
@@ -93,4 +82,31 @@ public class TopicDetail extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private boolean loadMyFragment(Fragment fragment) {
+        if (fragment == null) {
+            return false;
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
+
+        int id = item.getItemId();
+        if (id == R.id.navigation_Analysis) {
+            fragment = new AnalysisFragment();
+        }
+        else if (id == R.id.navigation_Comment){
+            fragment = new CommentFragment();
+        }
+        return loadMyFragment(fragment);
+    }
+
+    public Topic getTopic() {
+        return a;
+    }
 }
+

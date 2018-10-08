@@ -32,6 +32,7 @@ public class Topic implements Parcelable {
         this.neutral = in.readInt();
         this.date = in.readString();
         this.category = in.readString();
+
     }
 
     public Topic() {
@@ -113,7 +114,6 @@ public class Topic implements Parcelable {
         this.creator = creator;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -123,14 +123,15 @@ public class Topic implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(topic);
         parcel.writeString(creator);
+        parcel.writeString(creatorID);
         parcel.writeInt(angry);
         parcel.writeInt(happy);
         parcel.writeInt(sad);
         parcel.writeInt(neutral);
         parcel.writeString(date);
         parcel.writeString(category);
-
         //parcel.writeList(comments);
+
     }
     /**
      * This field is needed for Android to be able to

@@ -87,8 +87,8 @@ public class MainFeedFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Topic t = (Topic) topics.get(i);
-
                 Intent intent = new Intent(getActivity(), TopicDetail.class);
+                intent.putExtra("fragment_detail", "Analysis");
                 intent.putExtra("topic", t);
                 startActivity(intent);
             }
@@ -99,6 +99,7 @@ public class MainFeedFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CreateTopicActivity.class);
                 intent.putExtra("user", mAuth.getCurrentUser().getDisplayName());
+
                 startActivity(intent);
             }
         });

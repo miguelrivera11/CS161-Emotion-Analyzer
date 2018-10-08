@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_Analysis"
+        android:icon="@drawable/ic_insert_chart_black_24dp"
+        android:title= "@string/title_Analysis" />
+
+    <item
+        android:id="@+id/navigation_Comment"
+        android:icon="@drawable/ic_comment_black_24dp"
+        android:title="@string/title_Comment" />
+
+</menu>
