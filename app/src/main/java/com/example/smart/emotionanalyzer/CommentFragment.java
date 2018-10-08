@@ -78,10 +78,19 @@ public class CommentFragment extends Fragment {
                     usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Boolean same = false;
                             User userObject = dataSnapshot.getValue(User.class);
-                            userObject.addCreatedTopic(a.getTopic());
-                            userObject.addCommentedTopic(a.getTopic());
-                            usersRef.setValue(userObject);
+                            for (int i = 0; i < userObject.getCommentedTopics().size(); i++) {
+                                if (!userObject.getCommentedTopics().get(i).equals(a.getTopic()))
+                                    continue;
+                                same = true;
+                            }
+                            if (!same) {
+                                userObject.addCommentedTopic(a.getTopic());
+                                usersRef.setValue(userObject);
+                            }
+
+
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
