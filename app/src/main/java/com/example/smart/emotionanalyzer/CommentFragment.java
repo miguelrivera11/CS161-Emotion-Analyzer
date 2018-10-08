@@ -125,7 +125,7 @@ public class CommentFragment extends Fragment {
             }
         });
 
-        topicsRef.addValueEventListener(new ValueEventListener() {
+        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {

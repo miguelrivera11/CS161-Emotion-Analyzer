@@ -33,6 +33,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -41,9 +48,20 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     private Topic a;
     private String message;
 
+    private DatabaseReference repliesRef;
+    private DatabaseReference topicsRef;
+    private FirebaseDatabase database;
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+
+        user = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+
         setContentView(R.layout.activity_topic_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String fragment = getIntent().getExtras().getString("fragment_detail");
@@ -136,6 +154,30 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 message = input.getText().toString();
+                //Write Replies to database
+
+                topicsRef = database.getReference("Topics");
+                topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
+                            Topic compare = topicSnapShot.getValue(Topic.class);
+                            if (compare.getTopic().equals(a.getTopic())) {
+                                int size = compare.getComments().size();
+                                compare.getComments().get(0).addReply(new Comment(message, user.getDisplayName(), user.getUid(), "10/8/18"));
+
+                                String id = topicSnapShot.getKey();
+                                topicsRef.child(id).setValue(compare);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         });
         builder.setNegativeButton("Discard", new DialogInterface.OnClickListener() {
