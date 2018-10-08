@@ -89,8 +89,6 @@ public class CreateTopicActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: get actual user and analyze number of comments for each emotion
-                //TODO: write to database under topic id and return to main screen and wire up delete post
                 DatabaseReference ref = database.getReference().child("Topics");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();

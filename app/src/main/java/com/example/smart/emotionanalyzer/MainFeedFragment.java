@@ -79,7 +79,6 @@ public class MainFeedFragment extends Fragment {
         View  view =  inflater.inflate(R.layout.fragment_main_feed, null);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         topicsRef = database.getReference("Topics");
-        final Random r = new Random();
         topicListView = view.findViewById(R.id.list_of_topics);
         topics = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
