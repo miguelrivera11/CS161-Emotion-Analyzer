@@ -9,8 +9,17 @@
     <TextView
         android:id="@+id/lblListHeader"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:text="Reply"
+        android:textSize="12sp" />
 
 </LinearLayout>

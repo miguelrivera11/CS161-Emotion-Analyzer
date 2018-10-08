@@ -1,16 +1,26 @@
 package com.example.smart.emotionanalyzer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -29,6 +39,7 @@ import java.util.ArrayList;
 public class TopicDetail extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private Topic a;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +118,33 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
 
     public Topic getTopic() {
         return a;
+    }
+    public String getMessage() { return message; };
+
+    //Handle Reply in comment
+    public void onClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reply");
+
+        final EditText input = new EditText(this);
+
+        input.setSingleLine(false);
+        input.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        builder.setView(input);
+
+        builder.setPositiveButton("Reply", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                message = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 }
 

@@ -170,4 +170,6 @@ public class CommentFragment extends Fragment {
             counter++;
         }
     }
+
+
 }
