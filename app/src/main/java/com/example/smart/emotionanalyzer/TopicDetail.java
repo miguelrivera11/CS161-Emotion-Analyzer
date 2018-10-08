@@ -38,7 +38,6 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         String fragment = getIntent().getExtras().getString("fragment_detail");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.detail_navigation);
         a = getIntent().getExtras().getParcelable("topic");
-        a.setId(getIntent().getExtras().getString("id"));
         navigation.setOnNavigationItemSelectedListener(this);
         if(fragment.equals("Comment")) {
             navigation.setSelectedItemId(R.id.navigation_Comment);

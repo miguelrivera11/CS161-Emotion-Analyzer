@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import android.app.ProgressDialog;
 import android.widget.Toast;
 
@@ -36,40 +38,98 @@ import java.util.List;
 public class CommentFragment extends Fragment {
 
     private DatabaseReference topicsRef;
+    private DatabaseReference usersRef;
     private FirebaseDatabase database;
+    private FirebaseAuth mAuth;
     private ArrayList<Comment> comments;
     ExpandableListAdapter listAdapter;
     ExpandableListView expandableListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
+        topicsRef = database.getReference("Topics");
+        usersRef = database.getReference("Users/" + user.getUid());
         comments = new ArrayList<>();
-        View view =  inflater.inflate(R.layout.fragment_comment, null);
+        View view = inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
         TopicDetail activity = (TopicDetail) getActivity();
         final Topic a = activity.getTopic();
-        EditText comment = (EditText) view.findViewById(R.id.editTextComment);
+        final EditText commentEditText = (EditText) view.findViewById(R.id.editTextComment);
 
-        topicsRef = database.getReference("Topics");
+        commentEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                // If the event is a key-down event on the "enter" button
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (i == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    final Comment comment = new Comment(commentEditText.getText().toString(), user.getDisplayName(),user.getUid(), a.getDate());
+                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userObject = dataSnapshot.getValue(User.class);
+                            userObject.addCreatedTopic(a.getTopic());
+                            userObject.addCommentedTopic(a.getTopic());
+                            usersRef.setValue(userObject);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
+                                Topic compare = topicSnapShot.getValue(Topic.class);
+                                if (a.getTopic().equals(compare.getTopic())) {
+                                    compare.addComment(comment);
+
+                                    String id = topicSnapShot.getKey();
+                                    topicsRef.child(id).setValue(compare);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                            //Comment comment = new Comment("TEST COMMENT", "Random Person", "MadeUpID", "9/29/18");
+                    Toast.makeText(getActivity(), commentEditText.getText().toString(), Toast.LENGTH_SHORT).show();
+                    commentEditText.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         topicsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
                     Topic compare = topicSnapShot.getValue(Topic.class);
-                    if (compare.getId() != null && a.getId() !=null && a.getId().equals(compare.getId())) {
-                        for (DataSnapshot commentsSnapshot : topicSnapShot.child("comments").getChildren()) {
-                            Comment comment = commentsSnapshot.getValue(Comment.class);
-                            comments.add(comment);
+                    if (compare.getTopic().equals(a.getTopic())) {
+                        for (Comment c : compare.getComments()) {
+                            comments.add(c);
                         }
                     }
                 }
+
                 prepareListData();
                 listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
                 expandableListView.setAdapter(listAdapter);
@@ -90,10 +150,10 @@ public class CommentFragment extends Fragment {
 
         int counter = 0;
 
-        for (int i = comments.size() - 1; i >=0; i--) {
+        for (int i = comments.size() - 1; i >= 0; i--) {
             String message = comments.get(i).getComment();
             List<String> reply = new ArrayList<>();
-            for (int j = comments.get(i).getReplies().size() - 1; j >= 0 ; j--) {
+            for (int j = comments.get(i).getReplies().size() - 1; j >= 0; j--) {
                 String replyMessage = comments.get(i).getReplies().get(j).getComment();
                 reply.add(replyMessage);
             }

@@ -98,7 +98,6 @@ public class CreateTopicActivity extends AppCompatActivity {
                 Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), user.getUid(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 String id = topicref.push().getKey();
-                topic.setId(id);
                 topicref.child(id).setValue(topic);
                 userRef = database.getReference("Users/" + user.getUid());
                 userRef.addValueEventListener(new ValueEventListener() {
