@@ -28,6 +28,7 @@
     <string name="title_activity_edit_account">EditAccountActivity</string>
     <string name="action_cancel">cancel</string>
     <string name="action_confim">confirm</string>
+    <string name="commented_description">Quickly get back into the conversation on previouly commented topics</string>
     <string name="title_Analysis">Analysis</string>
     <string name="title_Comment">Comment/Reply</string>
 

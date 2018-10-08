@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +32,16 @@ public class TopicCateogryActivity extends AppCompatActivity {
         String category = getIntent().getExtras().getString("category");
         topics = new ArrayList<>();
         topicListView = findViewById(R.id.list_of_topics_by_category);
+        topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Topic t = (Topic) topics.get(i);
+
+                Intent intent = new Intent(TopicCateogryActivity.this, TopicDetail.class);
+                intent.putExtra("topic", t);
+                startActivity(intent);
+            }
+        });
         TextView title = findViewById(R.id.text_category);
         title.setText(category.toUpperCase());
         if (category.equals("construction")) {

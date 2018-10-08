@@ -92,13 +92,13 @@ public class CreateTopicActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference topicref = database.getReference().child("Topics");
+                DatabaseReference ref = database.getReference().child("Topics");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
                 Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), user.getUid(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
-                String id = topicref.push().getKey();
-                topicref.child(id).setValue(topic);
+                String id = ref.push().getKey();
+                ref.child(id).setValue(topic);
                 userRef = database.getReference("Users/" + user.getUid());
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override
