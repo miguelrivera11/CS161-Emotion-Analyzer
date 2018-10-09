@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,6 +142,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
 
     //Handle Reply in comment
     public void onClick(View v) {
+        View parentRow = (View) v.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reply");
 
@@ -157,6 +161,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                 //Write Replies to database
 
                 topicsRef = database.getReference("Topics");
+                //TODO: Only rewrite replies instead of entire topic
                 topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -164,7 +169,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                             Topic compare = topicSnapShot.getValue(Topic.class);
                             if (compare.getTopic().equals(a.getTopic())) {
                                 int size = compare.getComments().size();
-                                compare.getComments().get(0).addReply(new Comment(message, user.getDisplayName(), user.getUid(), "10/8/18"));
+                                compare.getComments().get(position).addReply(new Comment(message, user.getDisplayName(), user.getUid(), "10/8/18"));
 
                                 String id = topicSnapShot.getKey();
                                 topicsRef.child(id).setValue(compare);

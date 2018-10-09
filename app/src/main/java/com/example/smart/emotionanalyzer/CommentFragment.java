@@ -76,6 +76,7 @@ public class CommentFragment extends Fragment {
                         (i == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
                     final Comment comment = new Comment(commentEditText.getText().toString(), user.getDisplayName(),user.getUid(), a.getDate());
+
                     usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,6 +99,7 @@ public class CommentFragment extends Fragment {
 
                         }
                     });
+                    //TODO: Only rewrite comments instead of entire topic
                     topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
