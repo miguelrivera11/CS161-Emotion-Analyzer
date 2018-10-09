@@ -60,7 +60,6 @@ public class CommentFragment extends Fragment {
 
                 int actualI = comments.size() - i - 1;
 
-                Toast.makeText(getContext(), comments.get(actualI).getComment(), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -118,7 +117,7 @@ public class CommentFragment extends Fragment {
 
                         }
                     });
-                    Toast.makeText(getActivity(), commentEditText.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), commentEditText.getText().toString(), Toast.LENGTH_SHORT).show();
                     comments = new ArrayList<>();
                     commentEditText.setText("");
                     return true;

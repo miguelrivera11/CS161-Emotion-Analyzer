@@ -142,9 +142,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
 
     //Handle Reply in comment
     public void onClick(View v) {
-        View parentRow = (View) v.getParent();
-        ListView listView = (ListView) parentRow.getParent();
-        final int position = listView.getPositionForView(parentRow);
+        final View parentRow = (View) v.getParent();
+        final ListView listView = (ListView) parentRow.getParent();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reply");
 
@@ -168,7 +168,10 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                         for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
                             Topic compare = topicSnapShot.getValue(Topic.class);
                             if (compare.getTopic().equals(a.getTopic())) {
-                                int size = compare.getComments().size();
+
+
+                                int position =compare.getComments().size() - listView.getPositionForView(parentRow) - 1;
+
                                 compare.getComments().get(position).addReply(new Comment(message, user.getDisplayName(), user.getUid(), "10/8/18"));
 
                                 String id = topicSnapShot.getKey();
