@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +37,8 @@ public class MainFeedFragment extends Fragment {
     private FirebaseAuth mAuth;
     //DELETE
     boolean added = false;
-
+    ArrayList<String> searchTopicString;
+    ArrayList<Topic> searchTopic;
     @Override
     public void onStart() {
         super.onStart();
@@ -52,16 +54,42 @@ public class MainFeedFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (starting) {
-                    topics.clear();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Topic topic = child.getValue(Topic.class);
-                        topics.add(0, topic);
-                    }
-                    Context c = getActivity();
+                    MainActivity activity = (MainActivity) getActivity();
+                    Bundle args = getArguments();
+                    if (args == null || !args.getBoolean("search")) {
+                        topics.clear();
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Topic topic = child.getValue(Topic.class);
+                            topics.add(0, topic);
+                        }
+                        Context c = getActivity();
 
-                    TopicList adapter = new TopicList(getActivity(), topics);
-                    topicListView.setAdapter(adapter);
-                    starting = false;
+                        TopicList adapter = new TopicList(getActivity(), topics);
+                        topicListView.setAdapter(adapter);
+                        starting = false;
+                    } else {
+                        boolean check = getArguments().getBoolean("search");
+
+                        searchTopicString = getArguments().getStringArrayList("topiclist");
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            searchTopic = new ArrayList<>();
+                            Topic topic = child.getValue(Topic.class);
+                            for (String s : searchTopicString) {
+                                if (topic.getTopic().contains(s)) {
+                                    searchTopic.add(topic);
+                                }
+                            }
+                        }
+                        if (check || searchTopic.isEmpty()) {
+                            TopicList adapter = new TopicList(getActivity(), searchTopic);
+                            topicListView.setAdapter(adapter);
+                        }
+                        else {
+                            TopicList adapter = new TopicList(getActivity(), topics);
+                            topicListView.setAdapter(adapter);
+                        }
+
+                    }
                 }
             }
 
@@ -76,7 +104,7 @@ public class MainFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View  view =  inflater.inflate(R.layout.fragment_main_feed, null);
+        View view = inflater.inflate(R.layout.fragment_main_feed, null);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         topicsRef = database.getReference("Topics");
         topicListView = view.findViewById(R.id.list_of_topics);
@@ -124,7 +152,7 @@ public class MainFeedFragment extends Fragment {
                 Comment comment2 = new Comment("TEST COMMENT FROM CURRENT USER", name, creatorId, "9/29/18");
                 Comment reply = new Comment("TEST REPLY", name, creatorId, "9/29/18");
                 comment.addReply(reply);
-                Topic topic = new Topic("TEST TOPIC",name,creatorId, 32,32,32,32,"9/29/18", "Education");
+                Topic topic = new Topic("TEST TOPIC", name, creatorId, 32, 32, 32, 32, "9/29/18", "Education");
                 topic.addComment(comment);
                 topic.addComment(comment2);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();

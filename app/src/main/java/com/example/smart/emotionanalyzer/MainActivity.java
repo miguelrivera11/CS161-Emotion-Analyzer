@@ -17,20 +17,46 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     MaterialSearchView searchView;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference topicsRef;
+    private ArrayList<String> topicsList = new ArrayList<>();
+    boolean search = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        search = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        topicsList = new ArrayList<>();
+        database = FirebaseDatabase.getInstance();
+        topicsRef = database.getReference("Topics");
+        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot topic: dataSnapshot.getChildren()) {
+                    Topic compare = topic.getValue(Topic.class);
+                    topicsList.add(compare.getTopic());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Material Search");
@@ -58,14 +84,27 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 if (newText!= null && !newText.isEmpty()) {
-                    List<String> lstFound = new ArrayList<String>();
+                    ArrayList<String> lstFound = new ArrayList<String>();
                     //get all topic string
+                    for (String item : topicsList) {
+                        if (item.contains(newText))
+                            lstFound.add(item);
+
+                    }
+                    search = true;
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("search", search);
+                    bundle.putStringArrayList("topiclist", lstFound);
+                    MainFeedFragment fragment = new MainFeedFragment();
+                    fragment.setArguments(bundle);
+                    loadMyFragment(fragment);
                 }
-                return false;
+                return true;
             }
         });
-        Bundle bundle = getIntent().getExtras();
+
         String fragment = getIntent().getExtras().getString("fragment");
         mAuth = FirebaseAuth.getInstance();
 
@@ -124,5 +163,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         MenuItem item = menu.findItem(R.id.action_search);
         searchView.setMenuItem(item);
         return true;
+    }
+    public ArrayList<String> getTopicsList () {
+        return topicsList;
+    }
+    public boolean getSearch() {
+        return search;
     }
 }
