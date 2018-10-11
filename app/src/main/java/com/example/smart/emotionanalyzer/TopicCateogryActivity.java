@@ -24,11 +24,14 @@ public class TopicCateogryActivity extends AppCompatActivity {
 
     private ArrayList<Topic> topics;
     private ListView topicListView;
+    private TopicDatabaseManager topicManager;
+    private  ActivityManager activityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_cateogry);
+        activityManager = new ActivityManager(this);
         String category = getIntent().getExtras().getString("category");
         topics = new ArrayList<>();
         topicListView = findViewById(R.id.list_of_topics_by_category);
@@ -62,48 +65,17 @@ public class TopicCateogryActivity extends AppCompatActivity {
         else if (category.equals("politics")) {
             title.setBackgroundColor(getResources().getColor(R.color.color_politics, null));
         }
-        getTopics(category);
+        topicManager = new TopicDatabaseManager(this);
+        topicManager.getTopicsListByCategory(category, topics, topicListView);
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToBrowse();
+                Bundle bundle = getIntent().getExtras();
+                bundle.putString("fragment", "browse");
+                activityManager.changeActivty(MainActivity.class, bundle);
             }
         });
-    }
-
-    private void getTopics(final String category) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference topicsRef = database.getReference("Topics");
-        topicsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                topics.clear();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Topic topic = child.getValue(Topic.class);
-                    if (topic.getCategory().toLowerCase().equals(category.toLowerCase())) {
-                        topics.add(topic);
-                    }
-                }
-
-                TopicList adapter = new TopicList(TopicCateogryActivity.this, topics);
-                topicListView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void sendToBrowse() {
-        Bundle bundle = getIntent().getExtras();
-        bundle.putString("fragment", "browse");
-        Intent intent = new Intent(TopicCateogryActivity.this, MainActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        finish();
     }
 
 }
