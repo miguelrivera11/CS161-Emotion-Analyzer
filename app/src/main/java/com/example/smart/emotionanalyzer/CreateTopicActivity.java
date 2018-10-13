@@ -1,8 +1,6 @@
 package com.example.smart.emotionanalyzer;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,15 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toolbar;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,18 +21,18 @@ import java.util.List;
 
 public class CreateTopicActivity extends AppCompatActivity {
 
-    private FirebaseUser user;
-    private FirebaseDatabase database;
-    private DatabaseReference userRef;
-    private boolean added = false;
+    private UserManager userManager;
+    private TopicDatabaseManager topicManager;
+    private ActivityManager activityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_topic);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        database = FirebaseDatabase.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        topicManager = new TopicDatabaseManager(this);
+        userManager = new UserManager();
+        activityManager = new ActivityManager(this);
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
             String valueReceived = bundle.getString("name");
@@ -92,33 +81,14 @@ public class CreateTopicActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference ref = database.getReference().child("Topics");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
-                Topic topic = new Topic(postEditText.getText().toString(), user.getDisplayName(), user.getUid(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
+                Topic topic = new Topic(postEditText.getText().toString(), userManager.getName(), userManager.getUserID(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
-                String id = ref.push().getKey();
-                ref.child(id).setValue(topic);
-                userRef = database.getReference("Users/" + user.getUid());
-                userRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Method gets called twice since we are reading and writing to the database. Using the added boolean it only gets called once
-                        if (!added) {
-                            User userObject = dataSnapshot.getValue(User.class);
-                            userObject.addCreatedTopic(postEditText.getText().toString());
-                            userRef.setValue(userObject);
-                            added = true;
-                            sendToMain();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
+                topicManager.addTopic(topic);
+                Bundle bundle = getIntent().getExtras();
+                bundle.putString("fragment", "main");
+                activityManager.changeActivty(MainActivity.class, bundle);
 
             }
         });
@@ -147,21 +117,14 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void sendToMain() {
-        Bundle bundle = getIntent().getExtras();
-        bundle.putString("fragment", "main");
-        Intent intent = new Intent(CreateTopicActivity.this, MainActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        finish();
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 Log.d("back", "selected");
-                sendToMain();
+                Bundle bundle = getIntent().getExtras();
+                bundle.putString("fragment", "main");
+                activityManager.changeActivty(MainActivity.class, bundle);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,13 +1,7 @@
 package com.example.smart.emotionanalyzer;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,30 +10,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class EditAccountActivity extends AppCompatActivity {
     FirebaseUser user;
     boolean changingPassword = false;
+    UserManager userManager;
+    TopicDatabaseManager topicManager;
+    ActivityManager activityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_account);
+        topicManager = new TopicDatabaseManager(this);
+        userManager = new UserManager();
+        activityManager = new ActivityManager(this);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         final String oldEmail = user.getEmail();
@@ -82,8 +69,8 @@ public class EditAccountActivity extends AppCompatActivity {
                 String confirmPassword = confirmPasswordField.getText().toString();
                 final String name = nameField.getText().toString();
                 final String email = emailField.getText().toString();
-                final boolean nameChange = !user.getDisplayName().equals(name);
-                final boolean emailChange = !user.getEmail().equals(email);
+                final boolean nameChange = !userManager.getName().equals(name);
+                final boolean emailChange = !userManager.getEmail().equals(email);
                 boolean success = true;
                 if (changingPassword) {
                     if (!password.equals(confirmPassword)) {
@@ -92,7 +79,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         success = false;
                     }
                     else if (isPasswordValid(password)) {
-                        user.updatePassword(password);
+                        userManager.updatePassword(password);
                         success = true;
                     }
                     else {
@@ -101,7 +88,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
                 if(emailChange && success) {
                     if(isEmailValid(email)) {
-                        user.updateEmail(email);
+                        userManager.updateEmail(email);
                         success = success && true;
                     }
                     else {
@@ -109,19 +96,13 @@ public class EditAccountActivity extends AppCompatActivity {
                     }
                 }
                 if(nameChange && success) {
-                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-                    user.updateProfile(profileChangeRequest)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful() && nameChange) {
-                                        updateDatabase(name);
-                                    }
-                                }
-                            });
+                    userManager.updateName(name);
+                    topicManager.updateDatabaseforNameChange(name);
                 }
                 if(success) {
-                    sendToAccount();
+                    Bundle bundle = getIntent().getExtras();
+                    bundle.putString("fragment", "account");
+                    activityManager.changeActivityWithDelay(MainActivity.class, bundle, 3000);
                 }
 
             }
@@ -129,62 +110,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
     }
 
-    private void updateDatabase(final String name) {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("Users/" + user.getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                ArrayList<String> commentedTopics = user.getCommentedTopics();
-                updateTopicsAndComments(database, commentedTopics, name);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void updateTopicsAndComments(FirebaseDatabase database, final ArrayList<String> commentedTopics, final String name) {
-        final DatabaseReference topicsRef = database.getReference("Topics");
-        final String userID = user.getUid();
-        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    Topic topic = child.getValue(Topic.class);
-                    boolean changed = false;
-                    if (topic.getCreatorID().equals(userID)) {
-                        topic.setCreator(name);
-                        changed = true;
-                    }
-                    if (commentedTopics.contains(topic.getTopic())) {
-                        for (Comment comment: topic.getComments()) {
-                            if (comment.getCreatorID().equals(userID)) {
-                                comment.setCreator(name);
-                            }
-                            for (Comment reply: comment.getReplies()) {
-                                if (reply.getCreatorID().equals(userID)) {
-                                    reply.setCreator(name);
-                                }
-                            }
-                        }
-                        changed = true;
-                    }
-                    if (changed) {
-                        topicsRef.child(child.getKey()).setValue(topic);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private boolean isPasswordValid(String password) {
         if (password.length() >= 8 && password.matches(".*[A-Z].*") && password.matches(".*[0-9].*")) {
@@ -218,23 +144,4 @@ public class EditAccountActivity extends AppCompatActivity {
             return false;
         }
     }
-
-    private void sendToAccount() {
-        final Bundle bundle = getIntent().getExtras();
-        bundle.putString("fragment", "account");
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(EditAccountActivity.this, MainActivity.class);
-                intent.putExtras(bundle);
-
-                startActivity(intent);
-                finish();
-            }
-        };
-
-        Handler h = new Handler();
-        h.postDelayed(r, 3000); // will be delayed for 3 seconds to give time for databse to update
-    }
-
 }

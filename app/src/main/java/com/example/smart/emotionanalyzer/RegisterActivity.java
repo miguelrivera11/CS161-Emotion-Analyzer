@@ -15,10 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -64,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         userManager = new UserManager();
-                                        userManager.addUserInfo();
+                                        userManager.addUserInfo(name);
                                         Bundle bundle = new Bundle();
                                         bundle.putString("fragment", "MainFeedFragment");
                                         activityManager.changeActivty(MainActivity.class, bundle);

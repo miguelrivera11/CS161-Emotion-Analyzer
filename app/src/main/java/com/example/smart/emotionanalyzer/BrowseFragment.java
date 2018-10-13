@@ -1,6 +1,5 @@
 package com.example.smart.emotionanalyzer;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,18 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 
 public class BrowseFragment extends Fragment {
 
-    private ArrayList<Topic> topicList = new ArrayList<>();
+    private ActivityManager activityManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,59 +25,58 @@ public class BrowseFragment extends Fragment {
         Button education = view.findViewById(R.id.button_education);
         Button business = view.findViewById(R.id.button_business);
 
+        activityManager = new ActivityManager(getActivity());
+        final Bundle bundle = getActivity().getIntent().getExtras();
+
         politics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("politics");
+                bundle.putString("category", "politics");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         construction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("construction");
+                bundle.putString("category", "construction");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         entertainment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("TV/Movies");
+                bundle.putString("category", "TV/Movies");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         ethics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("society and ethics");
+                bundle.putString("category", "society and ethics");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         education.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("education");
+                bundle.putString("category", "education");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         business.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToTopicCategory("business");
+                bundle.putString("category", "business");
+                activityManager.changeActivty(TopicCateogryActivity.class, bundle);
             }
         });
 
         return view;
-    }
-
-
-    private void sendToTopicCategory(String category) {
-        Bundle bundle = getActivity().getIntent().getExtras();
-        bundle.putString("category", category);
-        Intent topicCategoryIntent = new Intent(getActivity(), TopicCateogryActivity.class);
-        topicCategoryIntent.putExtras(bundle);
-        startActivity(topicCategoryIntent);
-        getActivity().finish();
     }
 
 }
