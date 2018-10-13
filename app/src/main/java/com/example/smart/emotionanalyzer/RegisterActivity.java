@@ -15,10 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -28,12 +25,15 @@ public class RegisterActivity extends AppCompatActivity {
     private String confirmPassword;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
+    private ActivityManager activityManager;
+    private UserManager userManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        activityManager = new ActivityManager(this);
         mAuth = FirebaseAuth.getInstance();
         final EditText emailView = (EditText) findViewById(R.id.email);
         final EditText nameView = (EditText) findViewById(R.id.name);
@@ -60,20 +60,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-                                        user.updateProfile(profileChangeRequest)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                    }
-                                                });
-                                        User newUser = new User(name);
-                                        DatabaseReference usersReference = database.getReference("Users");
-                                        usersReference.child(user.getUid()).setValue(newUser);
-
-
-                                        sendToMain();
+                                        userManager = new UserManager();
+                                        userManager.addUserInfo(name);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("fragment", "MainFeedFragment");
+                                        activityManager.changeActivty(MainActivity.class, bundle);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(RegisterActivity.this, "Authentication failed.",
@@ -89,25 +80,9 @@ public class RegisterActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToLogin();
+                activityManager.changeActivty(LoginActivity.class, null);
             }
         });
-    }
-
-    private void sendToLogin() {
-        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
-    }
-
-    private void sendToMain() {
-        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("name", name);
-        bundle.putString("fragment", "MainFeedFragment");
-        mainIntent.putExtras(bundle);
-        startActivity(mainIntent);
-        finish();
     }
 
     private boolean isEmailValid(String email) {

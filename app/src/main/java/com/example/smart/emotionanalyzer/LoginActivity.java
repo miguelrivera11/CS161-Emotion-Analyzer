@@ -18,12 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 
 /**
  * A login screen that offers login via email/password.
@@ -32,18 +26,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private Intent mainIntent;
     private String userEmail;
     private String userPassword;
-    private String userName;
     private boolean reauthenticating;
-    boolean done;
+    private ActivityManager activityManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        activityManager = new ActivityManager(this);
         setContentView(R.layout.activity_login);
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -87,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToRegister();
+                activityManager.changeActivty(RegisterActivity.class, null);
             }
         });
 
@@ -98,7 +91,9 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         user = mAuth.getCurrentUser();
         if (user !=null && !reauthenticating) {
-            sendToMain(user.getDisplayName());
+            Bundle bundle = new Bundle();
+            bundle.putString("fragment", "MainFeedFragment");
+            activityManager.changeActivty(MainActivity.class, bundle);
         }
     }
 
@@ -115,7 +110,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            sendToMain(user.getUid());
+                            Bundle bundle = new Bundle();
+                            bundle.putString("fragment", "MainFeedFragment");
+                            activityManager.changeActivty(MainActivity.class, bundle);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -133,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    sendToEditAccount();
+                    activityManager.changeActivty(EditAccountActivity.class, getIntent().getExtras());
                 }
                 else {
                     Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -142,30 +139,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    private void sendToMain(String name) {
-        Bundle bundle = new Bundle();
-        bundle.putString("name", name);
-        bundle.putString("fragment", "MainFeedFragment");
-        mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-        mainIntent.putExtras(bundle);
-        startActivity(mainIntent);
-        finish();
-    }
-
-    private void sendToRegister() {
-        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(registerIntent);
-        finish();
-    }
-
-    private void sendToEditAccount() {
-        mainIntent = new Intent(LoginActivity.this, EditAccountActivity.class);
-        mainIntent.putExtras(getIntent().getExtras());
-        startActivity(mainIntent);
-        finish();
-    }
-
 }
 
