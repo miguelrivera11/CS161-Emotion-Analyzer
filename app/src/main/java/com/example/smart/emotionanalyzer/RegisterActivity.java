@@ -1,6 +1,9 @@
 package com.example.smart.emotionanalyzer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -9,6 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,6 +22,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.FileNotFoundException;
 
 public class RegisterActivity extends AppCompatActivity {
     private String email;
@@ -27,6 +34,9 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private ActivityManager activityManager;
     private UserManager userManager;
+    private ImageView profilePicture;
+    private TextView selectPicture;
+    private Uri profilePictureUri;
 
 
     @Override
@@ -39,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText nameView = (EditText) findViewById(R.id.name);
         final EditText passwordView = (EditText) findViewById(R.id.password);
         final EditText confirmPasswordView = (EditText) findViewById(R.id.confirm_password);
+        profilePicture = findViewById(R.id.profile_pic);
+        selectPicture = findViewById(R.id.select_pic);
         database = FirebaseDatabase.getInstance();
 
         Button registerButton = (Button) findViewById(R.id.register);
@@ -62,6 +74,9 @@ public class RegisterActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         userManager = new UserManager();
                                         userManager.addUserInfo(name);
+                                        if (profilePictureUri != null) {
+                                            userManager.updateProfilePicture(profilePictureUri);
+                                        }
                                         Bundle bundle = new Bundle();
                                         bundle.putString("fragment", "MainFeedFragment");
                                         activityManager.changeActivty(MainActivity.class, bundle);
@@ -83,7 +98,30 @@ public class RegisterActivity extends AppCompatActivity {
                 activityManager.changeActivty(LoginActivity.class, null);
             }
         });
+
+        selectPicture.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityManager.getPictureFromGallery();
+            }
+        });
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK){
+            profilePictureUri = data.getData();
+            Bitmap bitmap;
+            try {
+                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(profilePictureUri));
+                profilePicture.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private boolean isEmailValid(String email) {
         if (email.length() >= 7 && email.contains("@") && email.contains(".")) {

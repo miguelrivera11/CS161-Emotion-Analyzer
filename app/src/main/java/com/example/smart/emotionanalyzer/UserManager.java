@@ -1,6 +1,7 @@
 package com.example.smart.emotionanalyzer;
 
 
+import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
@@ -85,6 +86,25 @@ public class UserManager{
 
     public void updatePassword(String password) {
         firebaseUser.updatePassword(password);
+    }
+
+    public void updateProfilePicture(Uri photo) {
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(photo)
+                .build();
+
+        firebaseUser.updateProfile(profileChangeRequest)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                        }
+                    }
+                });
+    }
+
+    public Uri getProfilePicture() {
+        return firebaseUser.getPhotoUrl();
     }
 
     public void updateName(final String name) {

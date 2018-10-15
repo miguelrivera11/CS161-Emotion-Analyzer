@@ -36,4 +36,10 @@ public class ActivityManager {
         handler.postDelayed(r, millis);
     }
 
+    public void getPictureFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        context.startActivityForResult(intent, 0);
+    }
+
 }

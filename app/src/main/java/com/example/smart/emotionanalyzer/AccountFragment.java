@@ -1,5 +1,7 @@
 package com.example.smart.emotionanalyzer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +11,10 @@ import android.widget.Button;
 import android.content.Intent;
 
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.FileNotFoundException;
 
 
 public class AccountFragment extends Fragment {
@@ -31,6 +36,14 @@ public class AccountFragment extends Fragment {
         TextView emailDisplay = view.findViewById(R.id.display_email);
         nameDisplay.setText("Name: " + userManager.getName());
         emailDisplay.setText("Email: " + userManager.getEmail());
+        ImageView profilePicture = view.findViewById(R.id.profile_pic);
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(userManager.getProfilePicture()));
+            profilePicture.setImageBitmap(bitmap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         editAccount.setOnClickListener(new OnClickListener() {
             @Override

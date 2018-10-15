@@ -8,6 +8,20 @@
     android:layout_margin="10dp"
     tools:context=".RegisterActivity">
 
+    <ImageView
+        android:id="@+id/profile_pic"
+        android:layout_width="match_parent"
+        android:layout_height="143dp"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/select_pic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:text="@string/select_profile_pic" />
+
     <EditText
         android:id="@+id/name"
         android:layout_width="295dp"
