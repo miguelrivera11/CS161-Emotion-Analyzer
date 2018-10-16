@@ -112,13 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK){
             profilePictureUri = data.getData();
-            Bitmap bitmap;
-            try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(profilePictureUri));
-                profilePicture.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            profilePicture.setImageURI(profilePictureUri);
         }
     }
 

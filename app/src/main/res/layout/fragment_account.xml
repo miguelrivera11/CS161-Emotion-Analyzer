@@ -34,6 +34,7 @@
             android:id="@+id/profile_pic"
             android:layout_width="match_parent"
             android:layout_height="187dp"
+            android:layout_marginTop="10dp"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <TextView

@@ -1,11 +1,15 @@
 package com.example.smart.emotionanalyzer;
 
 
+import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,7 +19,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class UserManager{
@@ -23,6 +34,7 @@ public class UserManager{
     private FirebaseAuth mAuth;
     private FirebaseUser firebaseUser;
     private DatabaseReference userRef;
+    private StorageReference profilePictureRef;
 
 
     public UserManager() {
@@ -30,6 +42,8 @@ public class UserManager{
         firebaseUser = mAuth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users/" + firebaseUser.getUid());
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        profilePictureRef = storageReference.child(firebaseUser.getUid() + "/profilePicture");
     }
 
     public void addUserInfo(String name) {
@@ -89,22 +103,44 @@ public class UserManager{
     }
 
     public void updateProfilePicture(Uri photo) {
-        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(photo)
-                .build();
-
-        firebaseUser.updateProfile(profileChangeRequest)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        profilePictureRef.putFile(photo)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                        }
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
                     }
                 });
     }
 
-    public Uri getProfilePicture() {
-        return firebaseUser.getPhotoUrl();
+    public void displayProfilePicture(final ImageView profilePic, final Activity context) {
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            profilePictureRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Uri photoUri = Uri.fromFile(localFile);
+                            profilePic.setImageURI(photoUri);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Drawable d = context.getResources().getDrawable(android.R.drawable.ic_menu_gallery, null);
+                    profilePic.setImageDrawable(d);
+                }
+            });
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateName(final String name) {
