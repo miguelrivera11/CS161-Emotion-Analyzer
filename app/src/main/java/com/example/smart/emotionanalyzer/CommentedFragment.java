@@ -18,6 +18,7 @@ public class CommentedFragment extends Fragment {
     ArrayList<Topic> topics;
     ListView topicListView;
     private TopicDatabaseManager topicManager;
+    private ActivityManager activityManager;
 
 
     @Override
@@ -26,6 +27,7 @@ public class CommentedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_commented, null);
         topicManager = new TopicDatabaseManager(getActivity());
+        activityManager = new ActivityManager(getActivity());
 
         topics = new ArrayList<>();
         topicListView = view.findViewById(R.id.previously_commented_list);
@@ -33,11 +35,11 @@ public class CommentedFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Topic t = (Topic) topics.get(i);
-
-                Intent intent = new Intent(getActivity(), TopicDetail.class);
-                intent.putExtra("fragment_detail", "Analysis");
-                intent.putExtra("topic", t);
-                startActivity(intent);
+                Bundle bundle = getActivity().getIntent().getExtras();
+                bundle.putParcelable("topic", t);
+                bundle.putString("topicID", t.getTopicID());
+                bundle.putString("fragment_detail", "Analysis");
+                activityManager.changeActivty(TopicDetail.class, bundle);;
             }
         });
         topicManager.getPreviouslyCommentedTopics(topics, topicListView);

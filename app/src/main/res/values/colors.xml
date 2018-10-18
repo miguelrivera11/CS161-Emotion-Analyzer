@@ -9,4 +9,5 @@
     <color name="color_politics">#cda747</color>
     <color name="color_business">#47a7cd</color>
     <color name="color_ethics">#80de86</color>
+    <color name="color_light_menu_button">#d6dddf</color>
 </resources>

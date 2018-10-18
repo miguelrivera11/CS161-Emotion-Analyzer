@@ -31,6 +31,7 @@ public class TopicDatabaseManager {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     results.clear();
                     Topic topic = child.getValue(Topic.class);
+                    topic.setTopicID(child.getKey().toString());
                     for (String s : searchTopicString) {
                         if (topic.getTopic().contains(s)) {
                             results.add(topic);
@@ -73,7 +74,8 @@ public class TopicDatabaseManager {
                 topics.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Topic topic = child.getValue(Topic.class);
-                    topics.add(topic);
+                    topic.setTopicID(child.getKey().toString());
+                    topics.add(0, topic);
                 }
                 if (listView != null) {
                     TopicList adapter = new TopicList(context, topics);
@@ -95,6 +97,7 @@ public class TopicDatabaseManager {
                 topics.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Topic topic = child.getValue(Topic.class);
+                    topic.setTopicID(child.getKey().toString());
                     if (topic.getCategory().toLowerCase().equals(category.toLowerCase())) {
                         topics.add(topic);
                     }
@@ -146,12 +149,14 @@ public class TopicDatabaseManager {
     }
 
     private void getTopicsbyIDs(final ArrayList<String> topicIDs, final ArrayList<Topic> topics, final ListView listView) {
-        for(String topicID: topicIDs) {
+        for(final String topicID: topicIDs) {
             DatabaseReference topicRef = topicsRef.child(topicID);
             topicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    topics.add(dataSnapshot.getValue(Topic.class));
+                    Topic topic = dataSnapshot.getValue(Topic.class);
+                    topic.setTopicID(topicID);
+                    topics.add(topic);
                     TopicList adapter = new TopicList(context, topics);
                     listView.setAdapter(adapter);
                 }
@@ -262,5 +267,11 @@ public class TopicDatabaseManager {
         }
     }
 
+    public void deleteTopic(String topicID) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.removeValue();
+        UserManager userManager = new UserManager();
+        userManager.deleteCreatedTopic(topicID);
+    }
 
 }

@@ -39,10 +39,11 @@ public class TopicCateogryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Topic t = (Topic) topics.get(i);
-
-                Intent intent = new Intent(TopicCateogryActivity.this, TopicDetail.class);
-                intent.putExtra("topic", t);
-                startActivity(intent);
+                Bundle bundle = getIntent().getExtras();
+                bundle.putParcelable("topic", t);
+                bundle.putString("topicID", t.getTopicID());
+                bundle.putString("fragment_detail", "Analysis");
+                activityManager.changeActivty(TopicDetail.class, bundle);;
             }
         });
         TextView title = findViewById(R.id.text_category);

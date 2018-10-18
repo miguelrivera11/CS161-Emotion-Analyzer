@@ -32,6 +32,7 @@ public class AccountFragment extends Fragment {
 
         Button logout = view.findViewById(R.id.logout);
         Button editAccount = view.findViewById(R.id.edit_account);
+        Button topicButton = view.findViewById(R.id.view_created_button);
 
         TextView nameDisplay = view.findViewById(R.id.display_name);
         TextView emailDisplay = view.findViewById(R.id.display_email);
@@ -53,6 +54,15 @@ public class AccountFragment extends Fragment {
             public void onClick(View v) {
                 userManager.logout();
                 activityManager.changeActivty(LoginActivity.class, null);
+            }
+        });
+
+        topicButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = getActivity().getIntent().getExtras();
+                bundle.putString("fragment", "account");
+                activityManager.changeActivty(CreatedTopicsActivity.class, bundle);
             }
         });
 

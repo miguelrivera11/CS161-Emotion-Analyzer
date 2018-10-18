@@ -28,7 +28,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".CreateTopicActivity"
@@ -44,9 +44,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TopicDetail"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".MainActivity"/>
-
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".CreatedTopicsActivity"></activity>
     </application>
 
 </manifest>

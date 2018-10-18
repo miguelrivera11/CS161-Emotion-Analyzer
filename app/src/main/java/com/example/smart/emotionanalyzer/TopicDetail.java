@@ -3,6 +3,7 @@ package com.example.smart.emotionanalyzer;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -54,6 +57,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     private FirebaseDatabase database;
     private FirebaseUser user;
     private FirebaseAuth mAuth;
+    private UserManager userManager;
+    private ActivityManager activityManager;
+    private TopicDatabaseManager topicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,10 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         mAuth = FirebaseAuth.getInstance();
 
         user = mAuth.getCurrentUser();
+        userManager = new UserManager();
+        activityManager = new ActivityManager(this);
         database = FirebaseDatabase.getInstance();
+        topicManager = new TopicDatabaseManager(this);
 
         setContentView(R.layout.activity_topic_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,11 +103,32 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.topic_detail_menu, menu);
+        if (!userManager.getUserID().equals(a.getCreatorID())) {
+            menu.removeItem(R.id.topic_detail_delete);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundle = getIntent().getExtras();
         switch (item.getItemId()) {
+            case R.id.topic_detail_delete:
+                topicManager.deleteTopic(bundle.getString("topicID"));
+                activityManager.changeActivityWithDelay(MainActivity.class, bundle, 3000);
+                return true;
             case android.R.id.home:
                 Log.d("back", "selected");
-                sendToMain();
+                String fragment = bundle.getString("fragment");
+                if (fragment.equals("browse")) {
+                    activityManager.changeActivty(TopicCateogryActivity.class, bundle);
+                }
+                else {
+                    activityManager.changeActivty(MainActivity.class, bundle);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -9,6 +9,7 @@ public class Topic implements Parcelable {
     String topic;
     String creator;
     String creatorID;
+    String topicID;
     String date;
     int happy;
     int sad;
@@ -32,12 +33,13 @@ public class Topic implements Parcelable {
         this.neutral = in.readInt();
         this.date = in.readString();
         this.category = in.readString();
-
+        this.topicID = in.readString();
     }
 
     public Topic() {
         if (comments == null) {
             comments = new ArrayList<>();
+            topicID = "";
         }
     }
     /**
@@ -62,7 +64,7 @@ public class Topic implements Parcelable {
         this.neutral = neutral;
         this.date = date;
         this.category = category;
-
+        topicID = "";
         comments = new ArrayList<>();
     }
 
@@ -112,6 +114,14 @@ public class Topic implements Parcelable {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getTopicID() {
+        return topicID;
+    }
+
+    public void setTopicID(String topicID) {
+        this.topicID = topicID;
     }
 
     @Override

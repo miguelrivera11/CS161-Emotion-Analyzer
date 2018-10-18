@@ -154,4 +154,21 @@ public class UserManager{
                 });
     }
 
+    public void deleteCreatedTopic(final String topicID) {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                ArrayList<String> createdTopics = user.getCreatedTopics();
+                createdTopics.remove(topicID);
+                userRef.setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        }
+
 }

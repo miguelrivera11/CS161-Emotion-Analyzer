@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:menu="topic_detail_menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:isScrollContainer="false"
@@ -68,6 +69,7 @@
                 android:paddingRight="3dp"
                 android:text="TextView"
                 android:textSize="10sp" />
+
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
