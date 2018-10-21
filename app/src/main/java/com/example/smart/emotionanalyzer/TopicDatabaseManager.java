@@ -29,17 +29,20 @@ public class TopicDatabaseManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    results.clear();
+
                     Topic topic = child.getValue(Topic.class);
                     topic.setTopicID(child.getKey().toString());
                     for (String s : searchTopicString) {
                         if (topic.getTopic().contains(s)) {
-                            results.add(topic);
+                            if (!results.contains(topic)) {
+                                results.add(topic);
+                            }
                         }
                     }
                 }
                 TopicList adapter = new TopicList(context, results);
                 listView.setAdapter(adapter);
+                //results.clear();
             }
 
             @Override

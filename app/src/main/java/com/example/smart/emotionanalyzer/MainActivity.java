@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     for (String item : topicsList) {
                         if (item.contains(newText))
                             lstFound.add(item);
-
                     }
                     search = true;
                     Bundle bundle = new Bundle();
