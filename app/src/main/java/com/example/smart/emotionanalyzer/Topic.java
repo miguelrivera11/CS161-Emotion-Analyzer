@@ -34,6 +34,7 @@ public class Topic implements Parcelable {
         this.date = in.readString();
         this.category = in.readString();
         this.topicID = in.readString();
+        this.comments = in.readArrayList(Comment.class.getClassLoader());
     }
 
     public Topic() {

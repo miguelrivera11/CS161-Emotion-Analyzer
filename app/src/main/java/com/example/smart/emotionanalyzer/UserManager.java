@@ -162,6 +162,7 @@ public class UserManager{
                 ArrayList<String> createdTopics = user.getCreatedTopics();
                 createdTopics.remove(topicID);
                 userRef.setValue(user);
+                updateOtherUsersForDelete(topicID);
             }
 
             @Override
@@ -169,6 +170,47 @@ public class UserManager{
 
             }
         });
-        }
+    }
+
+    private void updateOtherUsersForDelete(final String topicID) {
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    User user = child.getValue(User.class);
+                    String userID = child.getKey().toString();
+                    ArrayList<String> commentedTopics = user.getCommentedTopics();
+                    if(user.getCommentedTopics().contains(topicID)) {
+                        commentedTopics.remove(topicID);
+                        usersRef.child(userID).setValue(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void addCommentedTopic(final String topicID) {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (!user.getCommentedTopics().contains(topicID)) {
+                    user.addCommentedTopic(topicID);
+                    userRef.setValue(user);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
 
 }

@@ -32,15 +32,13 @@ import java.util.List;
 
 public class CommentFragment extends Fragment {
 
-    private DatabaseReference topicsRef;
-    private DatabaseReference usersRef;
-    private FirebaseDatabase database;
-    private FirebaseAuth mAuth;
     private ArrayList<Comment> comments;
     ExpandableListAdapter listAdapter;
     ExpandableListView expandableListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    private UserManager userManager;
+    private TopicDatabaseManager topicDatabaseManager;
 
 
     @Override
@@ -48,12 +46,10 @@ public class CommentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        mAuth = FirebaseAuth.getInstance();
-
-        final FirebaseUser user = mAuth.getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        topicsRef = database.getReference("Topics");
-        usersRef = database.getReference("Users/" + user.getUid());
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+        userManager = new UserManager();
+        topicDatabaseManager = new TopicDatabaseManager(getActivity());
         comments = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
@@ -70,44 +66,10 @@ public class CommentFragment extends Fragment {
                     // Perform action on key press
                     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                     Date date = new Date();
-                    final Comment comment = new Comment(commentEditText.getText().toString(), user.getDisplayName(),user.getUid(), formatter.format(date).toString());
-                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Boolean same = false;
-                            User userObject = dataSnapshot.getValue(User.class);
-                            for (int i = 0; i < userObject.getCommentedTopics().size(); i++) {
-                                if (!userObject.getCommentedTopics().get(i).equals(a.getTopic()))
-                                    continue;
-                                same = true;
-                            }
-                            if (!same) {
-                                userObject.addCommentedTopic(a.getTopic());
-                                usersRef.setValue(userObject);
-                            }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                    final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString());
+                    userManager.addCommentedTopic(a.getTopicID());
                     //TODO: Only rewrite comments instead of entire topic
-                    topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
-                                Topic compare = topicSnapShot.getValue(Topic.class);
-                                if (a.getTopic().equals(compare.getTopic())) {
-                                    compare.addComment(comment);
-                                    String id = topicSnapShot.getKey();
-                                    topicsRef.child(id).setValue(compare);
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    topicDatabaseManager.addCommentToTopic(a, comment);
                     //Toast.makeText(getActivity(), commentEditText.getText().toString(), Toast.LENGTH_SHORT).show();
                     comments = new ArrayList<>();
                     commentEditText.setText("");
@@ -117,50 +79,9 @@ public class CommentFragment extends Fragment {
             }
         });
 
-        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
-                            Topic compare = topicSnapShot.getValue(Topic.class);
-                            if (compare.getTopic().equals(a.getTopic())) {
-                                for (Comment c : compare.getComments()) {
-                                    comments.add(c);
-                                }
-                            }
-                        }
-
-                prepareListData();
-                listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
-                expandableListView.setAdapter(listAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
         return view;
 
-    }
-
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-
-        int counter = 0;
-
-        for (int i = comments.size() - 1; i >= 0; i--) {
-            String message = comments.get(i).getComment();
-            List<String> reply = new ArrayList<>();
-            for (int j = comments.get(i).getReplies().size() - 1; j >= 0; j--) {
-                String replyMessage = comments.get(i).getReplies().get(j).getComment();
-                reply.add(replyMessage);
-            }
-
-            listDataHeader.add(message);
-            listDataChild.put(listDataHeader.get(counter), reply);
-            counter++;
-        }
     }
 
 

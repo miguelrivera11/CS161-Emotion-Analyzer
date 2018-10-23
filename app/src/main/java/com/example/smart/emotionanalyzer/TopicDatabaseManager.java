@@ -2,6 +2,7 @@ package com.example.smart.emotionanalyzer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -11,7 +12,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TopicDatabaseManager {
@@ -158,7 +161,6 @@ public class TopicDatabaseManager {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Topic topic = dataSnapshot.getValue(Topic.class);
-                    topic.setTopicID(topicID);
                     topics.add(topic);
                     TopicList adapter = new TopicList(context, topics);
                     listView.setAdapter(adapter);
@@ -278,4 +280,51 @@ public class TopicDatabaseManager {
         userManager.deleteCreatedTopic(topicID);
     }
 
+    public void addCommentToTopic(Topic topic, Comment comment) {
+        topic.addComment(comment);
+        topicsRef.child(topic.getTopicID()).setValue(topic);
+    }
+
+    public void getComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+    final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                Topic topic = dataSnapshot.getValue(Topic.class);
+                for (Comment c : topic.getComments()) {
+                    comments.add(c);
+                }
+
+                prepareListData(comments, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void prepareListData( ArrayList<Comment> comments, List<String> listDataHeader, HashMap<String, List<String>> listDataChild) {
+        listDataHeader.clear();
+        listDataChild.clear();
+
+        int counter = 0;
+
+        for (int i = comments.size() - 1; i >= 0; i--) {
+            String message = comments.get(i).getComment();
+            List<String> reply = new ArrayList<>();
+            for (int j = comments.get(i).getReplies().size() - 1; j >= 0; j--) {
+                String replyMessage = comments.get(i).getReplies().get(j).getComment();
+                reply.add(replyMessage);
+            }
+
+            listDataHeader.add(message);
+            listDataChild.put(listDataHeader.get(counter), reply);
+            counter++;
+        }
+    }
 }

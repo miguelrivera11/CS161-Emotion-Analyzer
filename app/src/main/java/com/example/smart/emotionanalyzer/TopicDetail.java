@@ -78,7 +78,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String fragment = getIntent().getExtras().getString("fragment_detail");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.detail_navigation);
-        a = getIntent().getExtras().getParcelable("topic");
+        Bundle bundle = getIntent().getExtras();
+        a = bundle.getParcelable("topic");
+        a.setTopicID(bundle.getString("topicID"));
         navigation.setOnNavigationItemSelectedListener(this);
         if(fragment.equals("Comment")) {
             navigation.setSelectedItemId(R.id.navigation_Comment);
@@ -127,6 +129,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                 String fragment = bundle.getString("fragment");
                 if (fragment.equals("browse")) {
                     activityManager.changeActivty(TopicCateogryActivity.class, bundle);
+                }
+                else if (fragment.equals("account")) {
+                    activityManager.changeActivty(CreatedTopicsActivity.class, bundle);
                 }
                 else {
                     activityManager.changeActivty(MainActivity.class, bundle);

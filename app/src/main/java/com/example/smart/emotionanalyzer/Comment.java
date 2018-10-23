@@ -8,6 +8,7 @@ public class Comment {
     String creatorID;
     String date;
     ArrayList<Comment> replies;
+    boolean isReply;
 
     public Comment() {
         if (replies == null) {
@@ -20,6 +21,7 @@ public class Comment {
         this.creator = creator;
         this.creatorID = creatorID;
         this.date = date;
+        isReply = false;
         replies = new ArrayList<>();
     }
 
