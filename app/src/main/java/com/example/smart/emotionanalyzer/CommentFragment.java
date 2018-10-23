@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,7 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,19 +58,9 @@ public class CommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
-
-                int actualI = comments.size() - i - 1;
-
-                return false;
-            }
-        });
         TopicDetail activity = (TopicDetail) getActivity();
         final Topic a = activity.getTopic();
         final EditText commentEditText = (EditText) view.findViewById(R.id.editTextComment);
-
         commentEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -73,8 +68,9 @@ public class CommentFragment extends Fragment {
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
-                    final Comment comment = new Comment(commentEditText.getText().toString(), user.getDisplayName(),user.getUid(), a.getDate());
-
+                    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                    Date date = new Date();
+                    final Comment comment = new Comment(commentEditText.getText().toString(), user.getDisplayName(),user.getUid(), formatter.format(date).toString());
                     usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -89,12 +85,9 @@ public class CommentFragment extends Fragment {
                                 userObject.addCommentedTopic(a.getTopic());
                                 usersRef.setValue(userObject);
                             }
-
-
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                     //TODO: Only rewrite comments instead of entire topic
@@ -105,7 +98,6 @@ public class CommentFragment extends Fragment {
                                 Topic compare = topicSnapShot.getValue(Topic.class);
                                 if (a.getTopic().equals(compare.getTopic())) {
                                     compare.addComment(comment);
-
                                     String id = topicSnapShot.getKey();
                                     topicsRef.child(id).setValue(compare);
                                 }
@@ -126,16 +118,16 @@ public class CommentFragment extends Fragment {
         });
 
         topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
-                    Topic compare = topicSnapShot.getValue(Topic.class);
-                    if (compare.getTopic().equals(a.getTopic())) {
-                        for (Comment c : compare.getComments()) {
-                            comments.add(c);
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
+                            Topic compare = topicSnapShot.getValue(Topic.class);
+                            if (compare.getTopic().equals(a.getTopic())) {
+                                for (Comment c : compare.getComments()) {
+                                    comments.add(c);
+                                }
+                            }
                         }
-                    }
-                }
 
                 prepareListData();
                 listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);

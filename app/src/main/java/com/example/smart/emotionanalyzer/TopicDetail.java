@@ -45,7 +45,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TopicDetail extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -198,12 +200,11 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                         for (DataSnapshot topicSnapShot : dataSnapshot.getChildren()) {
                             Topic compare = topicSnapShot.getValue(Topic.class);
                             if (compare.getTopic().equals(a.getTopic())) {
-
+                                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                                Date date = new Date();
 
                                 int position =compare.getComments().size() - listView.getPositionForView(parentRow) - 1;
-
-                                compare.getComments().get(position).addReply(new Comment(message, user.getDisplayName(), user.getUid(), "10/8/18"));
-
+                                compare.getComments().get(position).addReply(new Comment(message, user.getDisplayName(), user.getUid(), formatter.format(date).toString()));
                                 String id = topicSnapShot.getKey();
                                 topicsRef.child(id).setValue(compare);
                             }
