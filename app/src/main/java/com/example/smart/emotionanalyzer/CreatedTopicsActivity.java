@@ -21,6 +21,7 @@ public class CreatedTopicsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_created_topics);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activityManager = new ActivityManager(this);
         topicManager = new TopicDatabaseManager(this);
         topics = new ArrayList<>();

@@ -26,7 +26,7 @@ public class MainFeedFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         Bundle args = getArguments();
         if (args == null || !args.getBoolean("search")) {
-            topicManager.getAllTopicsListView(topics, topicListView);
+           topicManager.getAllTopicsListView(topics, topicListView);
         }
         else {
             searchTopicString = getArguments().getStringArrayList("topiclist");

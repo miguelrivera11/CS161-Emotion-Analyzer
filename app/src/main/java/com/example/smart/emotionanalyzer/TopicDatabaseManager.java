@@ -171,6 +171,7 @@ public class TopicDatabaseManager {
 
     public void addTopic(Topic topic) {
         String topicID = topicsRef.push().getKey();
+        topic.setTopicID(topicID);
         UserManager userManager = new UserManager();
         userManager.addCreatedTopic(topicID);
         topicsRef.child(topicID).setValue(topic);
