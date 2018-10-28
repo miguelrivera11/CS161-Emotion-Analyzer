@@ -15,10 +15,18 @@
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="17dp" />
 
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="-43dp"
+        android:layout_toLeftOf="@id/infoTextView" />
+
     <TextView
         android:id="@+id/infoTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
         android:paddingBottom="10dp"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:text="TextView"
