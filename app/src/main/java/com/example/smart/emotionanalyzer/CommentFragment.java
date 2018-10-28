@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -37,6 +40,7 @@ public class CommentFragment extends Fragment {
     ExpandableListView expandableListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    Spinner filterSpinner;
     private UserManager userManager;
     private TopicDatabaseManager topicDatabaseManager;
 
@@ -53,6 +57,27 @@ public class CommentFragment extends Fragment {
         comments = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_comment, null);
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
+        filterSpinner = (Spinner) view.findViewById(R.id.filterEmotionSpinner);
+
+        List<String> emotions = new ArrayList<>();
+        emotions.add("Default");
+        emotions.add("Happy");
+        emotions.add("Neutral");
+        emotions.add("Sad");
+        emotions.add("Angry");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, emotions);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(dataAdapter);
+
+        filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO filter by emotions
+            }
+        });
+
+
 
         TopicDetail activity = (TopicDetail) getActivity();
         final Topic a = activity.getTopic();
@@ -86,3 +111,4 @@ public class CommentFragment extends Fragment {
 
 
 }
+

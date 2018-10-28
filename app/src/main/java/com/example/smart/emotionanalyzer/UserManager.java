@@ -133,8 +133,11 @@ public class UserManager{
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Drawable d = context.getResources().getDrawable(android.R.drawable.ic_menu_gallery, null);
-                    profilePic.setImageDrawable(d);
+                    if (context != null) {
+                        Drawable d = context.getResources().getDrawable(android.R.drawable.ic_menu_gallery, null);
+                        profilePic.setImageDrawable(d);
+                    }
+
                 }
             });
         }

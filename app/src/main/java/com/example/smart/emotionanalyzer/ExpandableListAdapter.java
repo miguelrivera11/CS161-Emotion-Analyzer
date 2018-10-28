@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +26,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
+    private UserManager userManager;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {
@@ -111,7 +113,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(final int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+        userManager = new UserManager();
         final FirebaseUser user = mAuth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference topicsRef = database.getReference("Topics");
@@ -123,11 +125,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
 
+        ImageView profile = (ImageView) convertView.findViewById(R.id.profileImageView);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
         final TextView info = (TextView) convertView.findViewById(R.id.infoTextView);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
+        //userManager.displayProfilePicture(profile, null);
         topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
