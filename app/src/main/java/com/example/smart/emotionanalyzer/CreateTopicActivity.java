@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,9 +87,6 @@ public class CreateTopicActivity extends AppCompatActivity {
                 Topic topic = new Topic(postEditText.getText().toString(), userManager.getName(), userManager.getUserID(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 topicManager.addTopic(topic);
-                Bundle bundle = getIntent().getExtras();
-                bundle.putString("fragment", "main");
-                activityManager.changeActivty(MainActivity.class, bundle);
 
             }
         });

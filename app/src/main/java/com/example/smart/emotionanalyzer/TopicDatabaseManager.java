@@ -2,8 +2,10 @@ package com.example.smart.emotionanalyzer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -174,12 +176,42 @@ public class TopicDatabaseManager {
         }
     }
 
-    public void addTopic(Topic topic) {
-        String topicID = topicsRef.push().getKey();
-        topic.setTopicID(topicID);
-        UserManager userManager = new UserManager();
-        userManager.addCreatedTopic(topicID);
-        topicsRef.child(topicID).setValue(topic);
+    public void addTopic(final Topic topic) {
+        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean exists = false;
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    Topic createdTopic = child.getValue(Topic.class);
+                    String processedCreatedTopic = createdTopic.getTopic().trim().toLowerCase();
+                    String processedTopic = topic.getTopic().trim().toLowerCase();
+                    if(processedCreatedTopic.equals(processedTopic)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    String topicID = topicsRef.push().getKey();
+                    topic.setTopicID(topicID);
+                    UserManager userManager = new UserManager();
+                    userManager.addCreatedTopic(topicID);
+                    topicsRef.child(topicID).setValue(topic);
+                    ActivityManager activityManager = new ActivityManager(context);
+                    Bundle bundle = context.getIntent().getExtras();
+                    bundle.putString("fragment", "main");
+                    activityManager.changeActivty(MainActivity.class, bundle);
+                }
+                else {
+                    Toast.makeText(context, "Topic Already Exists",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void updateDatabaseforNameChange(final String name) {

@@ -19,12 +19,4 @@
         android:layout_width="match_parent"
         android:layout_height="485dp" />
 
-    <Button
-        android:id="@+id/auto_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/add_topic"
-        android:layout_marginEnd="12dp"
-        android:text="@string/action_add_topic" />
 </RelativeLayout>

@@ -68,35 +68,6 @@ public class MainFeedFragment extends Fragment {
             }
         });
 
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///THIS BUTTON AUTO ADDS A TOPIC TO DATABASE WITH COMMENTS AND REPLIES
-        //IT IS FOR QUICK ADDING FOR THE SAKE OF TESTING
-        //WE WILL REMOVE IT AFTER WE ARE DONE
-        //DELETE FROM START TO END AND DELETE BUTTON FROM XML
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// START
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Button autoAdd = view.findViewById(R.id.auto_add);
-        autoAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = userManager.getName();
-                String creatorId = userManager.getUserID();
-                Comment comment = new Comment("TEST COMMENT", "Random Person", "MadeUpID", "9/29/18", "Happy");
-                Comment comment2 = new Comment("TEST COMMENT FROM CURRENT USER", name, creatorId, "9/29/18", "Happy");
-                Comment reply = new Comment("TEST REPLY", name, creatorId, "9/29/18", "");
-                comment.addReply(reply);
-                Topic topic = new Topic("TEST TOPIC",name,creatorId, 32,32,32,4,"9/29/18", "Education");
-                topic.addComment(comment);
-                topic.addComment(comment2);
-                topicManager.addTopic(topic);
-            }
-        });
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///END
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         return view;
     }
 
