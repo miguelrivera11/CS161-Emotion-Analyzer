@@ -79,6 +79,38 @@ public class CommentFragment extends Fragment {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(dataAdapter);
 
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                switch(selected) {
+                    case "All" :
+                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Happy" :
+                        topicDatabaseManager.getHappyComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Neutral" :
+                        topicDatabaseManager.getNeutralComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Sad" :
+                        topicDatabaseManager.getSadComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Angry" :
+                        topicDatabaseManager.getAngryComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    default:
+                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         /*filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
