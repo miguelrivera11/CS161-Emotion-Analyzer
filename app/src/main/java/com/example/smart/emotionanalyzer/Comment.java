@@ -10,6 +10,7 @@ public class Comment implements Parcelable{
     String creator;
     String creatorID;
     String date;
+    String emotion;
     ArrayList<Comment> replies;
     boolean isReply;
 
@@ -25,6 +26,7 @@ public class Comment implements Parcelable{
         this.date = in.readString();
         this.replies = in.readArrayList(Comment.class.getClassLoader());
         this.isReply = (in.readInt() == 0)? false: true;
+        this.emotion = in.readString();
     }
 
     @Override
@@ -36,6 +38,7 @@ public class Comment implements Parcelable{
         parcel.writeList(replies);
         int n = (isReply)? 1:0;
         parcel.writeInt(n);
+        parcel.writeString(emotion);
     }
 
     public Comment() {
@@ -44,11 +47,12 @@ public class Comment implements Parcelable{
         }
     }
 
-    public Comment(String comment, String creator, String creatorID, String date) {
+    public Comment(String comment, String creator, String creatorID, String date, String emotion) {
         this.comment = comment;
         this.creator = creator;
         this.creatorID = creatorID;
         this.date = date;
+        this.emotion = emotion;
         isReply = false;
         replies = new ArrayList<>();
     }
@@ -106,5 +110,9 @@ public class Comment implements Parcelable{
     @Override
     public int hashCode() {
         return (comment + creatorID).hashCode();
+    }
+
+    public String getEmotion() {
+        return this.emotion;
     }
 }

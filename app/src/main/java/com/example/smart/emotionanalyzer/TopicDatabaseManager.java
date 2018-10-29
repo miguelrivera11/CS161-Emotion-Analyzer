@@ -310,6 +310,100 @@ public class TopicDatabaseManager {
         });
     }
 
+    public void getHappyComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+                                 final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                Topic topic = dataSnapshot.getValue(Topic.class);
+                for (Comment c : topic.getComments()) {
+                    if (c.getEmotion().equals("Happy"))
+                        comments.add(c);
+                }
+
+                prepareListData(comments, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getNeutralComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+                                 final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                Topic topic = dataSnapshot.getValue(Topic.class);
+                for (Comment c : topic.getComments()) {
+                    if (c.getEmotion().equals("Neutral"))
+                        comments.add(c);
+                }
+
+                prepareListData(comments, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void getSadComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+                                final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                Topic topic = dataSnapshot.getValue(Topic.class);
+                for (Comment c : topic.getComments()) {
+                    if (c.getEmotion().equals("Sad"))
+                        comments.add(c);
+                }
+
+                prepareListData(comments, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void getAngryComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+                               final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        DatabaseReference topicRef = topicsRef.child(topicID);
+        topicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                Topic topic = dataSnapshot.getValue(Topic.class);
+                for (Comment c : topic.getComments()) {
+                    if (c.getEmotion().equals("Angry"))
+                        comments.add(c);
+                }
+
+                prepareListData(comments, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                expandableListView.setAdapter(listAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void prepareListData( ArrayList<Comment> comments, List<String> listDataHeader, HashMap<String, List<String>> listDataChild) {
         listDataHeader.clear();
         listDataChild.clear();

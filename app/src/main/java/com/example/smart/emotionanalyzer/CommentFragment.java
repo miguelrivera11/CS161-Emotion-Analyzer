@@ -17,6 +17,7 @@ import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,8 +64,12 @@ public class CommentFragment extends Fragment {
         expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
         filterSpinner = (Spinner) view.findViewById(R.id.filterEmotionSpinner);
 
+        TopicDetail activity = (TopicDetail) getActivity();
+        final Topic a = activity.getTopic();
+        final EditText commentEditText = (EditText) view.findViewById(R.id.editTextComment);
+
         List<String> emotions = new ArrayList<>();
-        emotions.add("Default");
+        emotions.add("All");
         emotions.add("Happy");
         emotions.add("Neutral");
         emotions.add("Sad");
@@ -75,17 +80,40 @@ public class CommentFragment extends Fragment {
         filterSpinner.setAdapter(dataAdapter);
 
         /*filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO filter by emotions
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selected = adapterView.getItemAtPosition(i).toString();
+                switch(selected) {
+                    case "All" :
+                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Happy" :
+                        topicDatabaseManager.getHappyComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Neutral" :
+                        topicDatabaseManager.getNeutralComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Sad" :
+                        topicDatabaseManager.getSadComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    case "Angry" :
+                        topicDatabaseManager.getAngryComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+                    default:
+                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        break;
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });*/
 
 
 
-        TopicDetail activity = (TopicDetail) getActivity();
-        final Topic a = activity.getTopic();
-        final EditText commentEditText = (EditText) view.findViewById(R.id.editTextComment);
         commentEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -95,11 +123,9 @@ public class CommentFragment extends Fragment {
                     // Perform action on key press
                     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                     Date date = new Date();
-                    final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString());
+                    final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(), "Happy");
                     userManager.addCommentedTopic(a.getTopicID());
-                    //TODO: Only rewrite comments instead of entire topic
                     topicDatabaseManager.addCommentToTopic(a, comment);
-                    //Toast.makeText(getActivity(), commentEditText.getText().toString(), Toast.LENGTH_SHORT).show();
                     comments = new ArrayList<>();
                     commentEditText.setText("");
                     return true;
@@ -108,7 +134,7 @@ public class CommentFragment extends Fragment {
             }
         });
 
-        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+
         return view;
 
     }
