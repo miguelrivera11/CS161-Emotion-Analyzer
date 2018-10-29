@@ -62,6 +62,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     private UserManager userManager;
     private ActivityManager activityManager;
     private TopicDatabaseManager topicManager;
+    private ReportManager reportManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         Bundle bundle = getIntent().getExtras();
         a = bundle.getParcelable("topic");
         a.setTopicID(bundle.getString("topicID"));
+        reportManager = new ReportManager();
         navigation.setOnNavigationItemSelectedListener(this);
         if(fragment.equals("Comment")) {
             navigation.setSelectedItemId(R.id.navigation_Comment);
@@ -120,6 +122,15 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle bundle = getIntent().getExtras();
         switch (item.getItemId()) {
+            case R.id.topic_detail_report_duplicate:
+                reportManager.addReport(a.getTopicID(), userManager.getUserID(), Report.DUPLICATE);
+                return true;
+            case R.id.topic_detail_report_spam:
+                reportManager.addReport(a.getTopicID(), userManager.getUserID(), Report.SPAM);
+                return true;
+            case R.id.topic_detail_report_inappropiate:
+                reportManager.addReport(a.getTopicID(), userManager.getUserID(), Report.INAPPROPIATE);
+                return true;
             case R.id.topic_detail_delete:
                 topicManager.deleteTopic(bundle.getString("topicID"));
                 activityManager.changeActivityWithDelay(MainActivity.class, bundle, 3000);

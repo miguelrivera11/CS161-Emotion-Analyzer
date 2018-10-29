@@ -48,7 +48,7 @@ public class EditAccountActivity extends AppCompatActivity {
         TextView selectPic = findViewById(R.id.select_pic);
         profilePic = findViewById(R.id.profile_pic);
 
-        userManager.displayProfilePicture(profilePic, this);
+        userManager.displayProfilePicture(profilePic, this, userManager.getUserID());
         nameField.setText(user.getDisplayName());
         emailField.setText(user.getEmail());
         changePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

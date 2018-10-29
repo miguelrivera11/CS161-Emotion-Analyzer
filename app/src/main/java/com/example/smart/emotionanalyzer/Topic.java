@@ -3,6 +3,7 @@ package com.example.smart.emotionanalyzer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Topic implements Parcelable {
@@ -27,14 +28,29 @@ public class Topic implements Parcelable {
         this.topic = in.readString();
         this.creator = in.readString();
         this.creatorID = in.readString();
+        this.topicID = in.readString();
         this.angry = in.readInt();
         this.happy = in.readInt();
         this.sad = in.readInt();
         this.neutral = in.readInt();
         this.date = in.readString();
         this.category = in.readString();
-        this.topicID = in.readString();
         this.comments = in.readArrayList(Comment.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(topic);
+        parcel.writeString(creator);
+        parcel.writeString(creatorID);
+        parcel.writeString(topicID);
+        parcel.writeInt(angry);
+        parcel.writeInt(happy);
+        parcel.writeInt(sad);
+        parcel.writeInt(neutral);
+        parcel.writeString(date);
+        parcel.writeString(category);
+        parcel.writeList(comments);
     }
 
     public Topic() {
@@ -130,20 +146,6 @@ public class Topic implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(topic);
-        parcel.writeString(creator);
-        parcel.writeString(creatorID);
-        parcel.writeInt(angry);
-        parcel.writeInt(happy);
-        parcel.writeInt(sad);
-        parcel.writeInt(neutral);
-        parcel.writeString(date);
-        parcel.writeString(category);
-        //parcel.writeList(comments);
-
-    }
     /**
      * This field is needed for Android to be able to
      * create new objects, individually or as arrays

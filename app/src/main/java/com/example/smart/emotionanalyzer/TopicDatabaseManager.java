@@ -278,6 +278,8 @@ public class TopicDatabaseManager {
         topicRef.removeValue();
         UserManager userManager = new UserManager();
         userManager.deleteCreatedTopic(topicID);
+        ReportManager reportManager = new ReportManager();
+        reportManager.deleteReport(topicID);
     }
 
     public void addCommentToTopic(Topic topic, Comment comment) {

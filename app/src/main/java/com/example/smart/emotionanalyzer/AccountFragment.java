@@ -40,7 +40,7 @@ public class AccountFragment extends Fragment {
         emailDisplay.setText("Email: " + userManager.getEmail());
         ImageView profilePicture = view.findViewById(R.id.profile_pic);
         Bitmap bitmap;
-            userManager.displayProfilePicture(profilePicture, getActivity());
+            userManager.displayProfilePicture(profilePicture, getActivity(), userManager.getUserID());
 
         editAccount.setOnClickListener(new OnClickListener() {
             @Override

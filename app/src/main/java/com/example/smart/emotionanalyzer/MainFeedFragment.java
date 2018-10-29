@@ -53,6 +53,7 @@ public class MainFeedFragment extends Fragment {
                 Bundle bundle = getActivity().getIntent().getExtras();
                 bundle.putParcelable("topic", t);
                 bundle.putString("topicID", t.getTopicID());
+                bundle.putString("fragment", "main feed");
                 bundle.putString("fragment_detail", "Analysis");
                 activityManager.changeActivty(TopicDetail.class, bundle);
             }

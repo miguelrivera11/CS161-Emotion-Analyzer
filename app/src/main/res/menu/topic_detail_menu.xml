@@ -2,9 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/topic_detail_report"
+        android:id="@+id/topic_detail_report_duplicate"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/report" />
+        android:title="@string/report_duplicate" />
+
+    <item
+        android:id="@+id/topic_detail_report_spam"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/report_spam" />
+    <item
+        android:id="@+id/topic_detail_report_inappropiate"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/report_inappropiate" />
 
     <item
         android:id="@+id/topic_detail_delete"

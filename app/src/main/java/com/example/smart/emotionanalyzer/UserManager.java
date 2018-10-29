@@ -42,8 +42,6 @@ public class UserManager{
         firebaseUser = mAuth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users/" + firebaseUser.getUid());
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        profilePictureRef = storageReference.child(firebaseUser.getUid() + "/profilePicture");
     }
 
     public void addUserInfo(String name) {
@@ -120,9 +118,11 @@ public class UserManager{
                 });
     }
 
-    public void displayProfilePicture(final ImageView profilePic, final Activity context) {
+    public void displayProfilePicture(final ImageView profilePic, final Activity context, final String userID) {
         try {
             final File localFile = File.createTempFile("images", "jpg");
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            profilePictureRef = storageReference.child(userID + "/profilePicture");
             profilePictureRef.getFile(localFile)
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override

@@ -6,6 +6,8 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -125,13 +127,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
 
-        ImageView profile = (ImageView) convertView.findViewById(R.id.profileImageView);
+        final ImageView profile = (ImageView) convertView.findViewById(R.id.profileImageView);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
         final TextView info = (TextView) convertView.findViewById(R.id.infoTextView);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
-        //userManager.displayProfilePicture(profile, null);
         topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
@@ -141,6 +142,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     if(topic.getComments() != null && groupPosition < topic.getComments().size()) {
                         int position =topic.getComments().size() - groupPosition - 1;
                         Comment c = topic.getComments().get(position);
+                        userManager.displayProfilePicture(profile, null, c.getCreatorID());
                         info.setText(c.getCreator() + "  |  " + c.getDate());
                     }
                 }
@@ -162,4 +164,5 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
 }
