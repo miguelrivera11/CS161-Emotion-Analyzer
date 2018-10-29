@@ -82,9 +82,9 @@ public class MainFeedFragment extends Fragment {
             public void onClick(View v) {
                 String name = userManager.getName();
                 String creatorId = userManager.getUserID();
-                Comment comment = new Comment("TEST COMMENT", "Random Person", "MadeUpID", "9/29/18");
-                Comment comment2 = new Comment("TEST COMMENT FROM CURRENT USER", name, creatorId, "9/29/18");
-                Comment reply = new Comment("TEST REPLY", name, creatorId, "9/29/18");
+                Comment comment = new Comment("TEST COMMENT", "Random Person", "MadeUpID", "9/29/18", "Happy");
+                Comment comment2 = new Comment("TEST COMMENT FROM CURRENT USER", name, creatorId, "9/29/18", "Happy");
+                Comment reply = new Comment("TEST REPLY", name, creatorId, "9/29/18", "");
                 comment.addReply(reply);
                 Topic topic = new Topic("TEST TOPIC",name,creatorId, 32,32,32,4,"9/29/18", "Education");
                 topic.addComment(comment);

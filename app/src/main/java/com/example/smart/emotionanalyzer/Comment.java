@@ -7,6 +7,7 @@ public class Comment {
     String creator;
     String creatorID;
     String date;
+    String emotion;
     ArrayList<Comment> replies;
     boolean isReply;
 
@@ -16,11 +17,12 @@ public class Comment {
         }
     }
 
-    public Comment(String comment, String creator, String creatorID, String date) {
+    public Comment(String comment, String creator, String creatorID, String date, String emotion) {
         this.comment = comment;
         this.creator = creator;
         this.creatorID = creatorID;
         this.date = date;
+        this.emotion = emotion;
         isReply = false;
         replies = new ArrayList<>();
     }
@@ -51,5 +53,9 @@ public class Comment {
 
     public void addReply(Comment reply) {
         replies.add(reply);
+    }
+
+    public String getEmotion() {
+        return this.emotion;
     }
 }
