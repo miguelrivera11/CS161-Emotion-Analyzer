@@ -137,7 +137,6 @@ public class UserManager{
                         Drawable d = context.getResources().getDrawable(android.R.drawable.ic_menu_gallery, null);
                         profilePic.setImageDrawable(d);
                     }
-
                 }
             });
         }
