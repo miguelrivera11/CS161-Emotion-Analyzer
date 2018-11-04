@@ -3,6 +3,8 @@ package com.example.smart.emotionanalyzer;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,7 +31,7 @@ public class TopicDatabaseManager {
         this.context = context;
     }
 
-    public void searchTopics(final ArrayList<String> searchTopicString, final ArrayList<Topic> results, final ListView listView) {
+    public ArrayList<Topic> searchTopics(final ArrayList<String> searchTopicString, final ArrayList<Topic> results, final ListView listView) {
         topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
@@ -55,6 +57,7 @@ public class TopicDatabaseManager {
 
             }
         });
+        return results;
     }
 
     public void getAllTopicNames(final ArrayList<String> topicNames){

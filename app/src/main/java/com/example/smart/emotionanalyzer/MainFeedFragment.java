@@ -30,7 +30,19 @@ public class MainFeedFragment extends Fragment {
         }
         else {
             searchTopicString = getArguments().getStringArrayList("topiclist");
-            topicManager.searchTopics(searchTopicString, searchTopic, topicListView);
+            final ArrayList<Topic> searchArrayList = topicManager.searchTopics(searchTopicString, searchTopic, topicListView);
+            topicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Topic t = (Topic) searchArrayList.get(i);
+                    Bundle bundle = getActivity().getIntent().getExtras();
+                    bundle.putParcelable("topic", t);
+                    bundle.putString("topicID", t.getTopicID());
+                    bundle.putString("fragment", "main feed");
+                    bundle.putString("fragment_detail", "Analysis");
+                    activityManager.changeActivty(TopicDetail.class, bundle);
+                }
+            });
         }
     }
 
