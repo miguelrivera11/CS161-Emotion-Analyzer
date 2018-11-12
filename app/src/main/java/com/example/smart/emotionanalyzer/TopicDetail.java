@@ -139,10 +139,10 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                 Log.d("back", "selected");
                 String fragment = bundle.getString("fragment");
                 if (fragment.equals("browse")) {
-                    activityManager.changeActivty(TopicCateogryActivity.class, bundle);
+                    activityManager.changeActivty(MainActivity.class, bundle);
                 }
                 else if (fragment.equals("account")) {
-                    activityManager.changeActivty(CreatedTopicsActivity.class, bundle);
+                    activityManager.changeActivty(MainActivity.class, bundle);
                 }
                 else {
                     activityManager.changeActivty(MainActivity.class, bundle);

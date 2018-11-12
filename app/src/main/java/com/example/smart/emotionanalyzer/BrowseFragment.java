@@ -76,6 +76,7 @@ public class BrowseFragment extends Fragment {
             }
         });
 
+        bundle.putString("fragment", "browse");
         return view;
     }
 
