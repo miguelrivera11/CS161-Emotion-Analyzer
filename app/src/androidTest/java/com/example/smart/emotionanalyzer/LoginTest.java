@@ -44,12 +44,12 @@ public class LoginTest {
 
     @Test
     public void successLogin() {
-        onView(withId(R.id.email)).perform(click()).perform(replaceText("test@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click()).perform(replaceText("Tester123"), closeSoftKeyboard());
+        onView(withId(R.id.email)).perform(click()).perform(replaceText("albertyu_85@yahoo.com"), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(click()).perform(replaceText("Broncos81"), closeSoftKeyboard());
         onView(withId(R.id.email_sign_in_button)).perform(click());
         Activity mainActivity = getInstrumentation().waitForMonitorWithTimeout(monitor, 3000);
+        onView(withId(R.id.navigation_Account)).perform(click());
         onView(withId(R.id.logout)).perform(click());
-        mainActivity.finish();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class LoginTest {
         onView(withId(R.id.email)).perform(click()).perform(replaceText("incorrectemail@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(click()).perform(replaceText("Tester123"), closeSoftKeyboard());
         onView(withId(R.id.email_sign_in_button)).perform(click());
-        onView(withText("This email address is invalid")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Authentication failed.")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
    @Test
