@@ -40,6 +40,7 @@ public class RegisterTest {
         onView(withId(R.id.confirm_password)).perform(click()).perform(replaceText("Register123"), closeSoftKeyboard());
         onView(withId(R.id.register)).perform(click());
         Activity mainActivity = getInstrumentation().waitForMonitorWithTimeout(monitor, 6000);
+        onView(withId(R.id.navigation_Account)).perform(click());
         onView(withId(R.id.logout)).perform(click());
         mainActivity.finish();
     }
@@ -60,7 +61,7 @@ public class RegisterTest {
         onView(withId(R.id.password)).perform(click()).perform(replaceText("register123"), closeSoftKeyboard());
         onView(withId(R.id.confirm_password)).perform(click()).perform(replaceText("register123"), closeSoftKeyboard());
         onView(withId(R.id.register)).perform(click());
-        onView(withText("This password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Password must have a capital letter")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
     @Test
     public void blankPassword() {
@@ -69,7 +70,7 @@ public class RegisterTest {
         onView(withId(R.id.password)).perform(click()).perform(replaceText(""), closeSoftKeyboard());
         onView(withId(R.id.confirm_password)).perform(click()).perform(replaceText(""), closeSoftKeyboard());
         onView(withId(R.id.register)).perform(click());
-        onView(withText("This password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
     //
     @Test
@@ -79,7 +80,7 @@ public class RegisterTest {
         onView(withId(R.id.password)).perform(click()).perform(replaceText("Register"), closeSoftKeyboard());
         onView(withId(R.id.confirm_password)).perform(click()).perform(replaceText("Register"), closeSoftKeyboard());
         onView(withId(R.id.register)).perform(click());
-        onView(withText("This password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Password must have a numeral")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
@@ -89,7 +90,7 @@ public class RegisterTest {
         onView(withId(R.id.password)).perform(click()).perform(replaceText("reg"), closeSoftKeyboard());
         onView(withId(R.id.confirm_password)).perform(click()).perform(replaceText("reg"), closeSoftKeyboard());
         onView(withId(R.id.register)).perform(click());
-        onView(withText("This password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Password is too short")).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
