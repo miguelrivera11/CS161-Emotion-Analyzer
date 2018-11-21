@@ -44,10 +44,23 @@ public class EditAccountActivity extends AppCompatActivity {
         final EditText newPasswordField = findViewById(R.id.new_password_edit);
         final TextView confirmPasswordText = findViewById(R.id.confirm_password_text);
         final EditText confirmPasswordField = findViewById(R.id.confirm_password_edit);
+        Button cancel = findViewById(R.id.cancel);
         Button confirmChange = findViewById(R.id.confirm_changes);
         TextView selectPic = findViewById(R.id.select_pic);
         profilePic = findViewById(R.id.profile_pic);
 
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("fragment", "MainFeedFragment");
+                Intent intent = new Intent(EditAccountActivity.this, MainActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
         userManager.displayProfilePicture(profilePic, this, userManager.getUserID());
         nameField.setText(user.getDisplayName());
         emailField.setText(user.getEmail());
