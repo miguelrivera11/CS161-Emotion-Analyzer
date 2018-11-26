@@ -15,7 +15,6 @@ public class Topic implements Parcelable {
     int happy;
     int sad;
     int angry;
-    int neutral;
     ArrayList<Comment> comments;
     String category;
 
@@ -32,7 +31,6 @@ public class Topic implements Parcelable {
         this.angry = in.readInt();
         this.happy = in.readInt();
         this.sad = in.readInt();
-        this.neutral = in.readInt();
         this.date = in.readString();
         this.category = in.readString();
         this.comments = in.readArrayList(Comment.class.getClassLoader());
@@ -47,7 +45,6 @@ public class Topic implements Parcelable {
         parcel.writeInt(angry);
         parcel.writeInt(happy);
         parcel.writeInt(sad);
-        parcel.writeInt(neutral);
         parcel.writeString(date);
         parcel.writeString(category);
         parcel.writeList(comments);
@@ -67,18 +64,16 @@ public class Topic implements Parcelable {
      * @param angry
      * @param happy
      * @param sad
-     * @param neutral
      * @param date
      * @param category
      */
-    public Topic (String topic, String creator,String creatorID, int angry, int happy, int sad, int neutral, String date, String category) {
+    public Topic (String topic, String creator,String creatorID, int angry, int happy, int sad, String date, String category) {
         this.topic = topic;
         this.creator = creator;
         this.creatorID = creatorID;
         this.angry = angry;
         this.happy = happy;
         this.sad = sad;
-        this.neutral = neutral;
         this.date = date;
         this.category = category;
         topicID = "";
@@ -111,10 +106,6 @@ public class Topic implements Parcelable {
 
     public int getAngry() {
         return angry;
-    }
-
-    public int getNeutral() {
-        return neutral;
     }
 
     public int getSad() {

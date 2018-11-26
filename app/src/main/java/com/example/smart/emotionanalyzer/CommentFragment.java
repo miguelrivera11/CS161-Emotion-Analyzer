@@ -70,10 +70,10 @@ public class CommentFragment extends Fragment {
 
         List<String> emotions = new ArrayList<>();
         emotions.add("All");
-        emotions.add("Happy");
-        emotions.add("Neutral");
-        emotions.add("Sad");
         emotions.add("Angry");
+        emotions.add("Happy");
+        emotions.add("Sad");
+
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, emotions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -28,12 +29,11 @@ public class AnalysisFragment extends Fragment {
         TopicDetail activity = (TopicDetail) getActivity();
         Topic a = activity.getTopic();
         PieChart pieChart = (PieChart) view.findViewById(R.id.emotionChart);
-        float total = a.getAngry() + a.getHappy() + a.getSad() + a.getNeutral();
+        float total = a.getAngry() + a.getHappy() + a.getSad();
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry((float) a.getAngry() / total, "Angry"));
-        entries.add(new PieEntry((float)a.getHappy() / total, "Happy"));
-        entries.add(new PieEntry((float)a.getSad() / total, "Sad"));
-        entries.add(new PieEntry((float)a.getNeutral() / total, "Neutral"));
+        entries.add(new PieEntry((float) a.getAngry() / total * 100, "Angry"));
+        entries.add(new PieEntry((float)a.getHappy() / total * 100, "Happy"));
+        entries.add(new PieEntry((float)a.getSad() / total * 100, "Sad"));
 
         PieDataSet dataSet = new PieDataSet(entries,"" );
 
@@ -41,17 +41,18 @@ public class AnalysisFragment extends Fragment {
         labels.add("Angry");
         labels.add("Happy");
         labels.add("Sad");
-        labels.add("Neutral");
-
+        Description desc = new Description();
+        desc.setText("Percentage of Comments");
+        pieChart.setDescription(desc);
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         PieData data = new PieData(dataSet);
         data.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.WHITE);
-        pieChart.setDrawHoleEnabled(true);
+        pieChart.setDrawHoleEnabled(false);
         //pieChart.setHoleRadius(5f);
-        //pieChart.setUsePercentValues(true);
+        pieChart.setUsePercentValues(true);
         pieChart.setDrawEntryLabels(false);
-        pieChart.getDescription().setEnabled(false);
+        pieChart.getDescription().setEnabled(true);
         pieChart.setData(data);
         return view;
     }

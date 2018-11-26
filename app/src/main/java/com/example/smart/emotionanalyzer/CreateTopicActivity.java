@@ -84,7 +84,7 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
                 Date date = new Date();
-                Topic topic = new Topic(postEditText.getText().toString(), userManager.getName(), userManager.getUserID(), 20, 50, 30, 45, formatter.format(date), spinner.getSelectedItem().toString());
+                Topic topic = new Topic(postEditText.getText().toString(), userManager.getName(), userManager.getUserID(), 0, 0, 0, formatter.format(date), spinner.getSelectedItem().toString());
                 Log.d("Write", "Writing to database");
                 topicManager.addTopic(topic);
 
