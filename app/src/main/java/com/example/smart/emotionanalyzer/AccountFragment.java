@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 
 public class AccountFragment extends Fragment {
@@ -66,6 +67,13 @@ public class AccountFragment extends Fragment {
             }
         });
 
+        try {
+            nameDisplay.setText("" + predict());
+        }
+        catch (IOException e) {
+            nameDisplay.setText("fail");
+        }
+
         return view;
     }
 
@@ -78,6 +86,10 @@ public class AccountFragment extends Fragment {
         getActivity().finish();
     }
 
+    private int predict() throws IOException {
+        EmotionClassifier e = new EmotionClassifier(getActivity());
+        return e.predict("He will be great in this new role");
+    }
 
 
 }
