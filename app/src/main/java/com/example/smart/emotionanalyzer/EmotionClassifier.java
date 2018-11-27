@@ -3,12 +3,17 @@ package com.example.smart.emotionanalyzer;
 import android.app.Activity;
 import android.content.res.AssetManager;
 
+import com.google.android.gms.common.data.DataBufferUtils;
+
+import org.tensorflow.Session;
+import org.tensorflow.Tensor;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,12 +29,12 @@ public class EmotionClassifier{
     public static final int HAPPY = 1;
     public static final int SAD = 2;
 
-    private TensorFlowInferenceInterface tf;
+    private AdaptedTensorFlowInferenceInterface tf;
     private ArrayList<String> wordList = new ArrayList<>();
 
     public EmotionClassifier(Activity context) throws IOException {
         AssetManager assetManager = context.getAssets();
-        tf = new TensorFlowInferenceInterface(assetManager, "file:///android_asset/frozen_model.pb");
+        tf = new AdaptedTensorFlowInferenceInterface(assetManager, "file:///android_asset/frozen_model.pb");
         InputStream inputStream = assetManager.open("wordList.txt");
         Scanner in = new Scanner(inputStream);
         while (in.hasNextLine()){
@@ -37,13 +42,6 @@ public class EmotionClassifier{
         }
     }
 
-    public TensorFlowInferenceInterface getTf() {
-        return tf;
-    }
-
-    public void setTf(TensorFlowInferenceInterface tf) {
-        this.tf = tf;
-    }
 
     private String cleanSentences(String text) {
         return text.replaceAll("[^A-Za-z0-9 ]", "");
@@ -67,12 +65,17 @@ public class EmotionClassifier{
 
     public int predict(String text) {
         int[][] matrix = getMatrix(text);
-        long[] size = {MAX_SEQ_LENGTH};
-        tf.feed("Placeholder_1", matrix[0], size);
+        long[] size = {BATCH_SIZE, MAX_SEQ_LENGTH};
+        Tensor<Integer> input= Tensor.create(matrix, Integer.class);
+        long[] s = input.shape();
+        tf.feed("Placeholder_1", input);
+        //tf.feed("Placeholder_1:0", matrix, size);
         String[] outputNodes = {OUTPUT_NAME};
-        float[] predictedSentiment = new float[3];
+        float[] output = new float[BATCH_SIZE * NUM_CLASSES];
         tf.run(outputNodes);
-        tf.fetch(OUTPUT_NAME, predictedSentiment);
+        tf.fetch(OUTPUT_NAME, output);
+        float[] predictedSentiment = {output[0], output[1], output[2]};
+
         if(predictedSentiment[0] > predictedSentiment[1] && predictedSentiment[0] > predictedSentiment[2])
         {
             return ANGRY;

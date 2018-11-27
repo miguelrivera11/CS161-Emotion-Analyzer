@@ -86,9 +86,18 @@ public class AccountFragment extends Fragment {
         getActivity().finish();
     }
 
-    private int predict() throws IOException {
+    private String predict() throws IOException {
         EmotionClassifier e = new EmotionClassifier(getActivity());
-        return e.predict("He will be great in this new role");
+        int sentiment = e.predict("This is the dumbest idea I have ever heard");
+        if (sentiment == EmotionClassifier.ANGRY) {
+            return "angry";
+        }
+        else if (sentiment == EmotionClassifier.HAPPY) {
+            return "happy";
+        }
+        else {
+            return "sad";
+        }
     }
 
 
