@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,9 +90,6 @@ public class CommentFragment extends Fragment {
                         break;
                     case "Happy" :
                         topicDatabaseManager.getHappyComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    case "Neutral" :
-                        topicDatabaseManager.getNeutralComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
                         break;
                     case "Sad" :
                         topicDatabaseManager.getSadComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
@@ -155,9 +153,28 @@ public class CommentFragment extends Fragment {
                     // Perform action on key press
                     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                     Date date = new Date();
-                    final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(), "Happy");
-                    userManager.addCommentedTopic(a.getTopicID());
-                    topicDatabaseManager.addCommentToTopic(a, comment);
+
+                    try {
+                        String emotion = predict(commentEditText.getText().toString());
+                        if (emotion.equals("Happy")) {
+                            a.setHappy(a.getHappy() + 1);
+                        }
+                        if (emotion.equals("Angry")) {
+                            a.setAngry(a.getAngry() + 1);
+                        }
+                        if (emotion.equals("Sad")) {
+                            a.setSad(a.getSad() + 1);
+                        }
+                        final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(), emotion);
+                        userManager.addCommentedTopic(a.getTopicID());
+                        topicDatabaseManager.addCommentToTopic(a, comment);
+
+                    } catch(IOException e) {
+                        final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(),"");
+                        userManager.addCommentedTopic(a.getTopicID());
+                        topicDatabaseManager.addCommentToTopic(a, comment);
+                    }
+
                     comments = new ArrayList<>();
                     commentEditText.setText("");
                     return true;
@@ -171,6 +188,19 @@ public class CommentFragment extends Fragment {
 
     }
 
+    public String predict(String comment) throws IOException {
+        EmotionClassifier e = new EmotionClassifier(getActivity());
+        int sentiment = e.predict(comment);
+        if (sentiment == EmotionClassifier.ANGRY) {
+            return "Angry";
+        }
+        else if (sentiment == EmotionClassifier.HAPPY) {
+            return "Happy";
+        }
+        else {
+            return "Sad";
+        }
+    }
 
 }
 

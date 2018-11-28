@@ -56,6 +56,8 @@ public class Topic implements Parcelable {
             topicID = "";
         }
     }
+
+
     /**
      *
      * @param topic
@@ -112,6 +114,18 @@ public class Topic implements Parcelable {
         return sad;
     }
 
+
+    public void setHappy(int happy) {
+        this.happy = happy;
+    }
+
+    public void setSad(int sad) {
+        this.sad = sad;
+    }
+
+    public void setAngry(int angry) {
+        this.angry = angry;
+    }
     public String getCategory() {
         return category;
     }
