@@ -69,7 +69,6 @@ public class EmotionClassifier{
         Tensor<Integer> input= Tensor.create(matrix, Integer.class);
         long[] s = input.shape();
         tf.feed("Placeholder_1", input);
-        //tf.feed("Placeholder_1:0", matrix, size);
         String[] outputNodes = {OUTPUT_NAME};
         float[] output = new float[BATCH_SIZE * NUM_CLASSES];
         tf.run(outputNodes);

@@ -49,6 +49,7 @@ public class CommentFragment extends Fragment {
     Spinner filterSpinner;
     private UserManager userManager;
     private TopicDatabaseManager topicDatabaseManager;
+    private EmotionClassifier classifier;
 
 
     @Override
@@ -56,6 +57,12 @@ public class CommentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        try {
+            classifier = new EmotionClassifier(getActivity());
+        }
+        catch (IOException e) {
+            classifier = null;
+        }
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
         userManager = new UserManager();
@@ -155,21 +162,25 @@ public class CommentFragment extends Fragment {
                     Date date = new Date();
 
                     try {
-                        String emotion = predict(commentEditText.getText().toString());
-                        if (emotion.equals("Happy")) {
+                        int emotionDetected = classifier.predict(commentEditText.getText().toString());
+                        String emotion = "";
+                        if (emotionDetected == EmotionClassifier.HAPPY) {
                             a.setHappy(a.getHappy() + 1);
+                            emotion = "Happy";
                         }
-                        if (emotion.equals("Angry")) {
+                        if (emotionDetected == EmotionClassifier.ANGRY) {
                             a.setAngry(a.getAngry() + 1);
+                            emotion = "Angry";
                         }
-                        if (emotion.equals("Sad")) {
+                        if (emotionDetected == EmotionClassifier.SAD) {
                             a.setSad(a.getSad() + 1);
+                            emotion = "Sad";
                         }
                         final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(), emotion);
                         userManager.addCommentedTopic(a.getTopicID());
                         topicDatabaseManager.addCommentToTopic(a, comment);
 
-                    } catch(IOException e) {
+                    } catch(NullPointerException e) {
                         final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(),"");
                         userManager.addCommentedTopic(a.getTopicID());
                         topicDatabaseManager.addCommentToTopic(a, comment);
@@ -186,20 +197,6 @@ public class CommentFragment extends Fragment {
 
         return view;
 
-    }
-
-    public String predict(String comment) throws IOException {
-        EmotionClassifier e = new EmotionClassifier(getActivity());
-        int sentiment = e.predict(comment);
-        if (sentiment == EmotionClassifier.ANGRY) {
-            return "Angry";
-        }
-        else if (sentiment == EmotionClassifier.HAPPY) {
-            return "Happy";
-        }
-        else {
-            return "Sad";
-        }
     }
 
 }
