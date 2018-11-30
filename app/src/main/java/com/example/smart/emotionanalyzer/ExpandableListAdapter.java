@@ -5,13 +5,16 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,6 +66,25 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
+
+        final ImageView options = (ImageView) convertView.findViewById(R.id.imageViewReplyOptions);
+
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popUp = new PopupMenu(_context, view);
+                MenuInflater inflater = popUp.getMenuInflater();
+                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
+
+                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                popUp.show();
+            }
+        });
         final TextView info = (TextView) convertView.findViewById(R.id.infoTextView);
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
@@ -126,7 +148,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
+        final ImageView options = (ImageView) convertView.findViewById(R.id.imageViewOptions);
 
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popUp = new PopupMenu(_context, view);
+                MenuInflater inflater = popUp.getMenuInflater();
+                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
+
+                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                popUp.show();
+            }
+        });
         final ImageView profile = (ImageView) convertView.findViewById(R.id.profileImageView);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
