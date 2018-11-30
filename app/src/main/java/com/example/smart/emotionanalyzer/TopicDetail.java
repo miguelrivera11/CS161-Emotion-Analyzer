@@ -220,7 +220,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                                 Date date = new Date();
 
                                 int position =compare.getComments().size() - listView.getPositionForView(parentRow) - 1;
-                                compare.getComments().get(position).addReply(new Comment(message, user.getDisplayName(), user.getUid(), formatter.format(date).toString(), ""));
+                                Comment reply = new Comment(message, user.getDisplayName(), user.getUid(), formatter.format(date).toString(), "");
+                                reply.isReply = true;
+                                compare.getComments().get(position).addReply(reply);
                                 String id = topicSnapShot.getKey();
                                 topicsRef.child(id).setValue(compare);
                             }

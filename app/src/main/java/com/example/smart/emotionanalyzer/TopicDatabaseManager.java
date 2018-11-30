@@ -330,13 +330,15 @@ public class TopicDatabaseManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 comments.clear();
                 Topic topic = dataSnapshot.getValue(Topic.class);
-                for (Comment c : topic.getComments()) {
-                    comments.add(c);
-                }
+                if (topic != null) {
+                    for (Comment c : topic.getComments()) {
+                        comments.add(c);
+                    }
 
-                prepareListData(comments, listDataHeader, listDataChild);
-                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
-                expandableListView.setAdapter(listAdapter);
+                    prepareListData(comments, listDataHeader, listDataChild);
+                    ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                    expandableListView.setAdapter(listAdapter);
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

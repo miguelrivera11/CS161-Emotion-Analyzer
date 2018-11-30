@@ -177,6 +177,7 @@ public class CommentFragment extends Fragment {
                             emotion = "Sad";
                         }
                         final Comment comment = new Comment(commentEditText.getText().toString(), userManager.getName(),userManager.getUserID(), formatter.format(date).toString(), emotion);
+                        comment.isReply = false;
                         userManager.addCommentedTopic(a.getTopicID());
                         topicDatabaseManager.addCommentToTopic(a, comment);
 
