@@ -63,6 +63,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     private ActivityManager activityManager;
     private TopicDatabaseManager topicManager;
     private ReportManager reportManager;
+    public static Topic updatedTopic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
         Bundle bundle = getIntent().getExtras();
         a = bundle.getParcelable("topic");
         a.setTopicID(bundle.getString("topicID"));
+        updatedTopic = a;
         reportManager = new ReportManager();
         navigation.setOnNavigationItemSelectedListener(this);
         if(fragment.equals("Comment")) {
@@ -172,7 +174,6 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
-
         int id = item.getItemId();
         if (id == R.id.navigation_Analysis) {
             fragment = new AnalysisFragment();
@@ -184,7 +185,7 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
     }
 
     public Topic getTopic() {
-        return a;
+        return updatedTopic;
     }
     public String getMessage() { return message; };
 
@@ -209,7 +210,6 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
                 //Write Replies to database
 
                 topicsRef = database.getReference("Topics");
-                //TODO: Only rewrite replies instead of entire topic
                 topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -221,8 +221,9 @@ public class TopicDetail extends AppCompatActivity implements BottomNavigationVi
 
                                 int position =compare.getComments().size() - listView.getPositionForView(parentRow) - 1;
                                 Comment reply = new Comment(message, user.getDisplayName(), user.getUid(), formatter.format(date).toString(), "");
-                                reply.isReply = true;
-                                compare.getComments().get(position).addReply(reply);
+                                Comment parent = compare.getComments().get(position);
+                                reply.setIsReply(true, parent.comment, parent.creatorID);
+                                parent.addReply(reply);
                                 String id = topicSnapShot.getKey();
                                 topicsRef.child(id).setValue(compare);
                             }

@@ -13,6 +13,8 @@ public class Comment implements Parcelable{
     String emotion;
     ArrayList<Comment> replies;
     boolean isReply;
+    String parentComment;
+    String parentCommentCreatorID;
 
     /**
      * Use when reconstructing User object from parcel
@@ -27,6 +29,8 @@ public class Comment implements Parcelable{
         this.replies = in.readArrayList(Comment.class.getClassLoader());
         this.isReply = (in.readInt() == 0)? false: true;
         this.emotion = in.readString();
+        this.parentComment = in.readString();
+        this.parentCommentCreatorID = in.readString();
     }
 
     @Override
@@ -39,6 +43,8 @@ public class Comment implements Parcelable{
         int n = (isReply)? 1:0;
         parcel.writeInt(n);
         parcel.writeString(emotion);
+        parcel.writeString(parentComment);
+        parcel.writeString(parentCommentCreatorID);
     }
 
     public Comment() {
@@ -55,6 +61,8 @@ public class Comment implements Parcelable{
         this.emotion = emotion;
         isReply = false;
         replies = new ArrayList<>();
+        parentCommentCreatorID = "";
+        parentComment = "";
     }
 
     public String getCreator() {
@@ -114,5 +122,19 @@ public class Comment implements Parcelable{
 
     public String getEmotion() {
         return this.emotion;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Comment other = (Comment) obj;
+        return other.creatorID.equals(creatorID) && other.comment.equals(comment);
+    }
+
+    public void setIsReply(boolean isReply, String parentComment, String parentCommentCreatorID) {
+        this.isReply = isReply;
+        if (isReply == true) {
+            this.parentComment = parentComment;
+            this.parentCommentCreatorID = parentCommentCreatorID;
+        }
     }
 }

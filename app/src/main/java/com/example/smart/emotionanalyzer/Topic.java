@@ -172,4 +172,38 @@ public class Topic implements Parcelable {
     public int hashCode() {
         return (this.getTopic()).hashCode();
     }
+
+    public void removeReply(Comment replyToRemove) {
+        String parentComment = replyToRemove.parentComment;
+        String parentCommentCreatorId = replyToRemove.parentCommentCreatorID;
+        for (Comment comment: comments) {
+            if (comment.comment.equals(parentComment) && comment.creatorID.equals(parentCommentCreatorId)) {
+                for (int i = 0; i < comment.replies.size(); i++) {
+                    Comment reply = comment.replies.get(i);
+                    if (reply.equals(replyToRemove)) {
+                        comment.replies.remove(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeComment(Comment commentToRemove) {
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            if (comment.equals(commentToRemove)) {
+                String emotion = commentToRemove.getEmotion();
+                if (emotion.equals("Happy")) {
+                    happy -= 1;
+                }
+                else if (emotion.equals("Sad")) {
+                    sad -= 1;
+                }
+                else if (emotion.equals("Angry")) {
+                    angry -= 1;
+                }
+                comments.remove(i);
+            }
+        }
+    }
 }
