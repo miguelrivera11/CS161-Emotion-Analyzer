@@ -93,19 +93,19 @@ public class CommentFragment extends Fragment {
                 String selected = parent.getItemAtPosition(position).toString();
                 switch(selected) {
                     case "All" :
-                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        topicDatabaseManager.getComments(a, comments, expandableListView, listDataHeader, listDataChild);
                         break;
                     case "Happy" :
-                        topicDatabaseManager.getHappyComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        topicDatabaseManager.getHappyComments(a, comments, expandableListView, listDataHeader, listDataChild);
                         break;
                     case "Sad" :
-                        topicDatabaseManager.getSadComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        topicDatabaseManager.getSadComments(a, comments, expandableListView, listDataHeader, listDataChild);
                         break;
                     case "Angry" :
-                        topicDatabaseManager.getAngryComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        topicDatabaseManager.getAngryComments(a, comments, expandableListView, listDataHeader, listDataChild);
                         break;
                     default:
-                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
+                        topicDatabaseManager.getComments(a, comments, expandableListView, listDataHeader, listDataChild);
                         break;
 
                 }
@@ -116,40 +116,6 @@ public class CommentFragment extends Fragment {
 
             }
         });
-        /*filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selected = adapterView.getItemAtPosition(i).toString();
-                switch(selected) {
-                    case "All" :
-                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    case "Happy" :
-                        topicDatabaseManager.getHappyComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    case "Neutral" :
-                        topicDatabaseManager.getNeutralComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    case "Sad" :
-                        topicDatabaseManager.getSadComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    case "Angry" :
-                        topicDatabaseManager.getAngryComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-                    default:
-                        topicDatabaseManager.getComments(a.getTopicID(), comments, expandableListView, listDataHeader, listDataChild);
-                        break;
-
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-
-
 
         commentEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override

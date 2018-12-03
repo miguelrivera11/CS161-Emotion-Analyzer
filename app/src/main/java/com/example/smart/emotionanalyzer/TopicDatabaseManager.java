@@ -317,13 +317,35 @@ public class TopicDatabaseManager {
         reportManager.deleteReport(topicID);
     }
 
-    public void addCommentToTopic(Topic topic, Comment comment) {
-        topic.addComment(comment);
-        topicsRef.child(topic.getTopicID()).setValue(topic);
+    public void addCommentToTopic(Topic topic, final Comment comment) {
+        final String topicID = topic.getTopicID();
+        topicsRef.child(topicID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Topic inDatabse = dataSnapshot.getValue(Topic.class);
+                inDatabse.addComment(comment);
+                if (comment.emotion.equals("Happy")) {
+                    inDatabse.happy += 1;
+                }
+                else if (comment.emotion.equals("Sad")) {
+                    inDatabse.sad += 1;
+                }
+                else if (comment.emotion.equals("Angry")) {
+                    inDatabse.angry += 1;
+                }
+                topicsRef.child(topicID).setValue(inDatabse);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    public void getComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+    public void getComments(final Topic topic, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
     final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        String topicID = topic.getTopicID();
         DatabaseReference topicRef = topicsRef.child(topicID);
         topicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -336,7 +358,7 @@ public class TopicDatabaseManager {
                     }
 
                     prepareListData(comments, listDataHeader, listDataChild);
-                    ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                    ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild, topic);
                     expandableListView.setAdapter(listAdapter);
                 }
             }
@@ -347,8 +369,9 @@ public class TopicDatabaseManager {
         });
     }
 
-    public void getHappyComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+    public void getHappyComments(final Topic topic, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
                                  final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        String topicID = topic.getTopicID();
         DatabaseReference topicRef = topicsRef.child(topicID);
         topicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -361,7 +384,7 @@ public class TopicDatabaseManager {
                 }
 
                 prepareListData(comments, listDataHeader, listDataChild);
-                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild, topic);
                 expandableListView.setAdapter(listAdapter);
             }
             @Override
@@ -372,8 +395,9 @@ public class TopicDatabaseManager {
     }
 
 
-    public void getSadComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+    public void getSadComments(final Topic topic, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
                                 final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        String topicID = topic.getTopicID();
         DatabaseReference topicRef = topicsRef.child(topicID);
         topicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -386,7 +410,7 @@ public class TopicDatabaseManager {
                 }
 
                 prepareListData(comments, listDataHeader, listDataChild);
-                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild, topic);
                 expandableListView.setAdapter(listAdapter);
             }
             @Override
@@ -395,8 +419,9 @@ public class TopicDatabaseManager {
             }
         });
     }
-    public void getAngryComments(String topicID, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
+    public void getAngryComments(final Topic topic, final ArrayList<Comment> comments, final ExpandableListView expandableListView,
                                final List<String> listDataHeader, final HashMap<String, List<String>> listDataChild) {
+        String topicID = topic.getTopicID();
         DatabaseReference topicRef = topicsRef.child(topicID);
         topicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -409,7 +434,7 @@ public class TopicDatabaseManager {
                 }
 
                 prepareListData(comments, listDataHeader, listDataChild);
-                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+                ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild, topic);
                 expandableListView.setAdapter(listAdapter);
             }
             @Override
@@ -437,5 +462,10 @@ public class TopicDatabaseManager {
             listDataChild.put(listDataHeader.get(counter), reply);
             counter++;
         }
+    }
+
+    public void updateTopicAlreadyInDatabase(Topic topic) {
+        String topicID = topic.getTopicID();
+        topicsRef.child(topicID).setValue(topic);
     }
 }

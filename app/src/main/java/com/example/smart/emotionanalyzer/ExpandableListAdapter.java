@@ -31,13 +31,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
-    private UserManager userManager;
+    private UserManager userManager = new UserManager();
+    private TopicDatabaseManager topicManager = new TopicDatabaseManager(null);
+    private Topic topic;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 HashMap<String, List<String>> listChildData, Topic topic) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
+        this.topic = topic;
+        TopicDetail.updatedTopic = topic;
     }
 
     @Override
@@ -69,45 +73,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         final ImageView options = (ImageView) convertView.findViewById(R.id.imageViewReplyOptions);
 
-        options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popUp = new PopupMenu(_context, view);
-                MenuInflater inflater = popUp.getMenuInflater();
-                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
-
-                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        return false;
-                    }
-                });
-                popUp.show();
-            }
-        });
         final TextView info = (TextView) convertView.findViewById(R.id.infoTextView);
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
-        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Topic topic = child.getValue(Topic.class);
-                    if(topic.getComments() != null && groupPosition < topic.getComments().size()) {
-                        int position =topic.getComments().size() - groupPosition - 1;
-                        if (topic.getComments().get(position).getReplies() != null && childPosition < topic.getComments().get(position).getReplies().size()) {
-                            Comment replyMessage = topic.getComments().get(position).getReplies().get(childPosition);
-                            info.setText(replyMessage.getCreator() + " | "  + replyMessage.getDate());
-                        }
-
-                    }
-                }
+        if(topic.getComments() != null && groupPosition < topic.getComments().size()) {
+            int position =topic.getComments().size() - groupPosition - 1;
+            Comment comment = topic.getComments().get(position);
+            if (comment.getReplies() != null && childPosition < comment.getReplies().size()) {
+                int replyIndex = comment.replies.size() - childPosition - 1;
+                Comment replyMessage = comment.getReplies().get(replyIndex);
+                setupReplyMenu(options, replyMessage);
+                info.setText(replyMessage.getCreator() + " | "  + replyMessage.getDate());
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+        }
         txtListChild.setText(childText);
         return convertView;
     }
@@ -137,7 +116,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(final int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        userManager = new UserManager();
         final FirebaseUser user = mAuth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference topicsRef = database.getReference("Topics");
@@ -150,47 +128,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         final ImageView options = (ImageView) convertView.findViewById(R.id.imageViewOptions);
 
-        options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popUp = new PopupMenu(_context, view);
-                MenuInflater inflater = popUp.getMenuInflater();
-                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
-
-                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        return false;
-                    }
-                });
-                popUp.show();
-            }
-        });
         final ImageView profile = (ImageView) convertView.findViewById(R.id.profileImageView);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
         final TextView info = (TextView) convertView.findViewById(R.id.infoTextView);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
-        topicsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Topic topic = child.getValue(Topic.class);
-
-                    if(topic.getComments() != null && groupPosition < topic.getComments().size()) {
-                        int position =topic.getComments().size() - groupPosition - 1;
-                        Comment c = topic.getComments().get(position);
-                        userManager.displayProfilePicture(profile, null, c.getCreatorID());
-                        info.setText(c.getCreator() + "  |  " + c.getDate());
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        if(topic.getComments() != null && groupPosition < topic.getComments().size()) {
+            int position =topic.getComments().size() - groupPosition - 1;
+            Comment c = topic.getComments().get(position);
+            userManager.displayProfilePicture(profile, null, c.getCreatorID());
+            setUpCommentMenu(options, c);
+            info.setText(c.getCreator() + "  |  " + c.getDate());
+        }
         return convertView;
     }
 
@@ -204,4 +154,53 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+    private void setupReplyMenu(ImageView options, final Comment reply) {
+        if (!userManager.getUserID().equals(reply.creatorID)) {
+            options.setVisibility(View.INVISIBLE);
+            return;
+        }
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popUp = new PopupMenu(_context, view);
+                MenuInflater inflater = popUp.getMenuInflater();
+                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
+
+                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        topic.removeReply(reply);
+                        topicManager.updateTopicAlreadyInDatabase(topic);
+                        return true;
+                    }
+                });
+                popUp.show();
+            }
+        });
+    }
+
+    private void setUpCommentMenu(ImageView options, final Comment comment) {
+        if (!userManager.getUserID().equals(comment.creatorID) && !userManager.getUserID().equals(topic.getCreatorID())) {
+            options.setVisibility(View.INVISIBLE);
+            return;
+        }
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popUp = new PopupMenu(_context, view);
+                MenuInflater inflater = popUp.getMenuInflater();
+                inflater.inflate(R.menu.comment_menu, popUp.getMenu());
+
+                popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        topic.removeComment(comment);
+                        topicManager.updateTopicAlreadyInDatabase(topic);
+                        return true;
+                    }
+                });
+                popUp.show();
+            }
+        });
+    }
 }
