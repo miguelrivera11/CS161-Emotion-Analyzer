@@ -49,6 +49,10 @@ public class EditAccountActivity extends AppCompatActivity {
         TextView selectPic = findViewById(R.id.select_pic);
         profilePic = findViewById(R.id.profile_pic);
 
+        newPasswordField.setVisibility(View.INVISIBLE);
+        newPasswordText.setVisibility(View.INVISIBLE);
+        confirmPasswordField.setVisibility(View.INVISIBLE);
+        confirmPasswordText.setVisibility(View.INVISIBLE);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
