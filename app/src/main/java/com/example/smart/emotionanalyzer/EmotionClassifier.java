@@ -64,7 +64,8 @@ public class EmotionClassifier{
     }
 
     public int predict(String text) {
-        int[][] matrix = getMatrix(text);
+        String inputText = text.toLowerCase();
+        int[][] matrix = getMatrix(inputText);
         long[] size = {BATCH_SIZE, MAX_SEQ_LENGTH};
         Tensor<Integer> input= Tensor.create(matrix, Integer.class);
         long[] s = input.shape();
