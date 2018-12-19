@@ -22,7 +22,7 @@ public class EmotionClassifier{
     private static final int NUM_CLASSES = 3;
     private static final int BATCH_SIZE = 24;
     private static final int MAX_SEQ_LENGTH = 35;
-    private static final String INPUT_NAME = "input_data";
+    private static final String INPUT_NAME = "Placeholer_1";
     private static final String OUTPUT_NAME = "add";
 
     public static final int ANGRY = 0;
@@ -74,6 +74,7 @@ public class EmotionClassifier{
         float[] output = new float[BATCH_SIZE * NUM_CLASSES];
         tf.run(outputNodes);
         tf.fetch(OUTPUT_NAME, output);
+	//Get the first three probabilities as the predicted sentiment for this sentence (model expects 23 sentences and outputs a prediction for each)
         float[] predictedSentiment = {output[0], output[1], output[2]};
 
         if(predictedSentiment[0] > predictedSentiment[1] && predictedSentiment[0] > predictedSentiment[2])
