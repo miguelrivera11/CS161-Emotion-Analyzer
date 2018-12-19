@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 14 11:42:20 2018
-
-@author: smart
-"""
+#adapted from Oreily turtorial
 
 import numpy as np
 wordsList = np.load('wordsList.npy')

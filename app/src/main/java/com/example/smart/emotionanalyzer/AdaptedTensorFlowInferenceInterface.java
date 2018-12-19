@@ -1,3 +1,7 @@
+
+// Copyright 2016 The TensorFlow Authors. All Rights Reserved.
+//Adpated by Miguel Rivera to accept tensors as input so that 2D tensors could be accepted
+
 package com.example.smart.emotionanalyzer;
 
 import android.content.res.AssetManager;
